@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Préférences Utilisateurs - Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --success-color: #27ae60;
+            --danger-color: #e74c3c;
+            --warning-color: #f39c12;
+            --info-color: #17a2b8;
+            --light-color: #f8f9fa;
+            --dark-color: #343a40;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .main-container {
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+            margin: 20px;
+            min-height: calc(100vh - 40px);
+        }
+
+        .header-section {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 2rem;
+            border-radius: 20px 20px 0 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="white" opacity="0.1"/><circle cx="75" cy="75" r="1" fill="white" opacity="0.1"/><circle cx="50" cy="10" r="0.5" fill="white" opacity="0.1"/><circle cx="20" cy="80" r="0.5" fill="white" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+            pointer-events: none;
+        }
+
+        .breadcrumb {
+            background: transparent;
+            padding: 0;
+            margin-bottom: 1rem;
+        }
+
+        .breadcrumb-item a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+        }
+
+        .breadcrumb-item.active {
+            color: white;
+        }
+
+        .preferences-section {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 1rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .preference-card {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            border-left: 4px solid var(--secondary-color);
+            transition: all 0.3s ease;
+        }
+
+        .preference-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .preference-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .preference-item:last-child {
+            border-bottom: none;
+        }
+
+        .preference-label {
+            font-weight: 500;
+            color: var(--dark-color);
+        }
+
+        .preference-value {
+            color: var(--secondary-color);
+            font-weight: bold;
+        }
+
+        .user-search {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin: 1rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-control, .form-select {
+            border-radius: 10px;
+            border: 2px solid #e9ecef;
+            padding: 0.75rem 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+        }
+
+        .btn-custom {
+            border-radius: 25px;
+            padding: 0.75rem 1.5rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border: none;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary-custom {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+        }
+
+        .btn-primary-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            color: white;
+        }
+
+        .btn-success-custom {
+            background: linear-gradient(135deg, var(--success-color), #2ecc71);
+            color: white;
+        }
+
+        .btn-success-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            color: white;
+        }
+
+        .btn-warning-custom {
+            background: linear-gradient(135deg, var(--warning-color), #e67e22);
+            color: white;
+        }
+
+        .btn-warning-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            color: white;
+        }
+
+        .badge-custom {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .badge-kosher { background: #e8f5e8; color: #27ae60; }
+        .badge-allergen { background: #fff3cd; color: #856404; }
+        .badge-dietary { background: #e3f2fd; color: #1976d2; }
+        .badge-skill { background: #f3e5f5; color: #7b1fa2; }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-item {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--secondary-color);
+        }
+
+        .stat-label {
+            color: var(--dark-color);
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+        }
+
+        .modal-content {
+            border-radius: 15px;
+            border: none;
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border-radius: 15px 15px 0 0;
+        }
+
+        .alert-custom {
+            border-radius: 15px;
+            border: none;
+            padding: 1rem 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .loading-spinner {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 3rem;
+        }
+
+        @media (max-width: 768px) {
+            .main-container {
+                margin: 10px;
+                border-radius: 15px;
+            }
+            
+            .header-section {
+                padding: 1.5rem;
+                border-radius: 15px 15px 0 0;
+            }
+            
+            .preferences-section {
+                margin: 0.5rem;
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <!-- Header -->
+        <div class="header-section">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">
+                        <a href="dashboard.html">
+                            <i class="bi bi-house-door"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item">
+                        <a href="users.html">
+                            <i class="bi bi-people"></i> Utilisateurs
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item active">
+                        <i class="bi bi-sliders"></i> Préférences
+                    </li>
+                </ol>
+            </nav>
+            
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <h1 class="display-4 fw-bold mb-2">
+                        <i class="bi bi-sliders me-3"></i>
+                        Préférences Utilisateurs
+                    </h1>
+                    <p class="lead mb-0">
+                        Gérez les préférences alimentaires et les paramètres avancés des utilisateurs
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recherche Utilisateur -->
+        <div class="user-search">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Rechercher un utilisateur</label>
+                        <input type="text" class="form-control" id="userSearch" 
+                               placeholder="Tapez le nom ou l'email de l'utilisateur..." 
+                               onkeyup="searchUsers()">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Filtrer par préférence</label>
+                        <select class="form-select" id="preferenceFilter" onchange="filterUsers()">
+                            <option value="">Tous les utilisateurs</option>
+                            <option value="kosher">Utilisateurs Kasher</option>
+                            <option value="vegan">Utilisateurs Vegan</option>
+                            <option value="vegetarian">Utilisateurs Végétariens</option>
+                            <option value="allergies">Avec allergies</option>
+                            <option value="dietary_goals">Avec objectifs diététiques</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Statistiques des préférences -->
+            <div class="stats-grid" id="preferencesStats">
+                <div class="stat-item">
+                    <div class="stat-value" id="totalUsers">-</div>
+                    <div class="stat-label">Total Utilisateurs</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="kosherUsers">-</div>
+                    <div class="stat-label">Utilisateurs Kasher</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="usersWithAllergies">-</div>
+                    <div class="stat-label">Avec Allergies</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="usersWithGoals">-</div>
+                    <div class="stat-label">Avec Objectifs</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Liste des Utilisateurs -->
+        <div id="usersList">
+            <div class="loading-spinner">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Chargement...</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Détails des Préférences -->
+    <div class="modal fade" id="preferencesModal" tabindex="-1">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="bi bi-sliders me-2"></i>
+                        Préférences de <span id="modalUserName">Utilisateur</span>
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <!-- Informations de base -->
+                        <div class="col-md-6">
+                            <div class="preference-card">
+                                <h6 class="fw-bold mb-3">
+                                    <i class="bi bi-person-circle me-2"></i>
+                                    Informations Familiales
+                                </h6>
+                                <div class="preference-item">
+                                    <span class="preference-label">Adultes</span>
+                                    <span class="preference-value" id="modalAdultsCount">-</span>
+                                </div>
+                                <div class="preference-item">
+                                    <span class="preference-label">Enfants</span>
+                                    <span class="preference-value" id="modalChildrenCount">-</span>
+                                </div>
+                                <div class="preference-item">
+                                    <span class="preference-label">Niveau de cuisine</span>
+                                    <span class="preference-value" id="modalCookingSkill">-</span>
+                                </div>
+                                <div class="preference-item">
+                                    <span class="preference-label">Difficulté préférée</span>
+                                    <span class="preference-value" id="modalPreferredDifficulty">-</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Préférences alimentaires -->
+                        <div class="col-md-6">
+                            <div class="preference-card">
+                                <h6 class="fw-bold mb-3">
+                                    <i class="bi bi-heart-pulse me-2"></i>
+                                    Préférences Alimentaires
+                                </h6>
+                                <div class="preference-item">
+                                    <span class="preference-label">Niveau Kasher</span>
+                                    <span class="preference-value" id="modalKosherLevel">-</span>
+                                </div>
+                                <div class="preference-item">
+                                    <span class="preference-label">Restrictions alimentaires</span>
+                                    <div id="modalDietaryRestrictions">-</div>
+                                </div>
+                                <div class="preference-item">
+                                    <span class="preference-label">Allergènes</span>
+                                    <div id="modalAllergens">-</div>
+                                </div>
+                                <div class="preference-item">
+                                    <span class="preference-label">Ingrédients exclus</span>
+                                    <div id="modalExcludedIngredients">-</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <!-- Objectifs santé -->
+                        <div class="col-md-6">
+                            <div class="preference-card">
+                                <h6 class="fw-bold mb-3">
+                                    <i class="bi bi-activity me-2"></i>
+                                    Objectifs Santé
+                                </h6>
+                                <div class="preference-item">
+                                    <span class="preference-label">Objectif diététique</span>
+                                    <span class="preference-value" id="modalDietGoal">-</span>
+                                </div>
+                                <div class="preference-item">
+                                    <span class="preference-label">Poids actuel</span>
+                                    <span class="preference-value" id="modalCurrentWeight">-</span>
+                                </div>
+                                <div class="preference-item">
+                                    <span class="preference-label">Poids cible</span>
+                                    <span class="preference-value" id="modalTargetWeight">-</span>
+                                </div>
+                                <div class="preference-item">
+                                    <span class="preference-label">Calories quotidiennes</span>
+                                    <span class="preference-value" id="modalDailyCalories">-</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Préférences de repas -->
+                        <div class="col-md-6">
+                            <div class="preference-card">
+                                <h6 class="fw-bold mb-3">
+                                    <i class="bi bi-clock me-2"></i>
+                                    Préférences de Repas
+                                </h6>
+                                <div class="preference-item">
+                                    <span class="preference-label">Inclure déjeuner</span>
+                                    <span class="preference-value" id="modalIncludeLunch">-</span>
+                                </div>
+                                <div class="preference-item">
+                                    <span class="preference-label">Inclure dîner</span>
+                                    <span class="preference-value" id="modalIncludeDinner">-</span>
+                                </div>
+                                <div class="preference-item">
+                                    <span class="preference-label">Repas adultes</span>
+                                    <span class="preference-value" id="modalIncludeAdultMeals">-</span>
+                                </div>
+                                <div class="preference-item">
+                                    <span class="preference-label">Repas enfants</span>
+                                    <span class="preference-value" id="modalIncludeChildMeals">-</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <!-- Planning et budget -->
+                        <div class="col-md-6">
+                            <div class="preference-card">
+                                <h6 class="fw-bold mb-3">
+                                    <i class="bi bi-calendar-week me-2"></i>
+                                    Planning et Budget
+                                </h6>
+                                <div class="preference-item">
+                                    <span class="preference-label">Repas raffinés/semaine</span>
+                                    <span class="preference-value" id="modalWeeklyRefinedMeals">-</span>
+                                </div>
+                                <div class="preference-item">
+                                    <span class="preference-label">Niveau de budget</span>
+                                    <span class="preference-value" id="modalBudgetLevel">-</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Actions rapides -->
+                        <div class="col-md-6">
+                            <div class="preference-card">
+                                <h6 class="fw-bold mb-3">
+                                    <i class="bi bi-tools me-2"></i>
+                                    Actions Rapides
+                                </h6>
+                                <div class="d-grid gap-2">
+                                    <button class="btn btn-primary-custom btn-custom" onclick="editUserPreferences()">
+                                        <i class="bi bi-pencil"></i>
+                                        Modifier les Préférences
+                                    </button>
+                                    <button class="btn btn-success-custom btn-custom" onclick="generatePersonalizedMenu()">
+                                        <i class="bi bi-magic"></i>
+                                        Générer Menu Personnalisé
+                                    </button>
+                                    <button class="btn btn-warning-custom btn-custom" onclick="resetUserPreferences()">
+                                        <i class="bi bi-arrow-clockwise"></i>
+                                        Réinitialiser aux Défauts
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary btn-custom" data-bs-dismiss="modal">
+                        <i class="bi bi-x-circle"></i>
+                        Fermer
+                    </button>
+                    <button type="button" class="btn btn-primary-custom btn-custom" onclick="exportUserPreferences()">
+                        <i class="bi bi-download"></i>
+                        Exporter les Données
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts Bootstrap et JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Variables globales
+        let allUsers = [];
+        let filteredUsers = [];
+        let currentUser = null;
+
+        // Au chargement de la page
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAuthentication();
+            loadUsersData();
+        });
+
+        function checkAuthentication() {
+            const token = localStorage.getItem('adminToken');
+            if (!token) {
+                window.location.href = 'login.html';
+                return;
+            }
+        }
+
+        async function loadUsersData() {
+            try {
+                const token = localStorage.getItem('adminToken');
+                const response = await fetch('/api/users', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    allUsers = data.users || [];
+                    filteredUsers = [...allUsers];
+                    
+                    updateStatistics();
+                    displayUsers();
+                } else {
+                    showError('Erreur lors du chargement des utilisateurs');
+                }
+            } catch (error) {
+                console.error('Erreur:', error);
+                showError('Erreur de connexion');
+            }
+        }
+
+        function updateStatistics() {
+            const stats = calculatePreferencesStats();
+            
+            document.getElementById('totalUsers').textContent = stats.total;
+            document.getElementById('kosherUsers').textContent = stats.kosher;
+            document.getElementById('usersWithAllergies').textContent = stats.allergies;
+            document.getElementById('usersWithGoals').textContent = stats.goals;
+        }
+
+        function calculatePreferencesStats() {
+            const stats = {
+                total: allUsers.length,
+                kosher: 0,
+                allergies: 0,
+                goals: 0
+            };
+
+            allUsers.forEach(user => {
+                // Compter les utilisateurs kosher
+                if (user.kosherLevel && user.kosherLevel !== 'none') {
+                    stats.kosher++;
+                }
+
+                // Compter les utilisateurs avec allergies
+                if (user.allergens && user.allergens.length > 0) {
+                    stats.allergies++;
+                }
+
+                // Compter les utilisateurs avec objectifs diététiques
+                if (user.dietGoal && user.dietGoal !== 'none') {
+                    stats.goals++;
+                }
+            });
+
+            return stats;
+        }
+
+        function displayUsers() {
+            const container = document.getElementById('usersList');
+            
+            if (filteredUsers.length === 0) {
+                container.innerHTML = `
+                    <div class="preferences-section text-center">
+                        <i class="bi bi-people display-1 text-muted mb-3"></i>
+                        <h3 class="text-muted">Aucun utilisateur trouvé</h3>
+                        <p class="text-muted">Aucun utilisateur ne correspond aux critères de recherche</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const usersHTML = filteredUsers.map(user => `
+                <div class="preferences-section">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <div>
+                            <h4 class="fw-bold mb-1">${user.name}</h4>
+                            <p class="text-muted mb-2">${user.email}</p>
+                            <div class="d-flex gap-2 flex-wrap">
+                                ${user.kosherLevel && user.kosherLevel !== 'none' ? 
+                                    `<span class="badge-custom badge-kosher">Kasher ${user.kosherLevel}</span>` : ''}
+                                ${user.allergens && user.allergens.length > 0 ? 
+                                    `<span class="badge-custom badge-allergen">${user.allergens.length} allergènes</span>` : ''}
+                                ${user.dietaryRestrictions && user.dietaryRestrictions.length > 0 ? 
+                                    `<span class="badge-custom badge-dietary">${user.dietaryRestrictions.length} restrictions</span>` : ''}
+                                ${user.cookingSkillLevel ? 
+                                    `<span class="badge-custom badge-skill">Niveau ${user.cookingSkillLevel}</span>` : ''}
+                            </div>
+                        </div>
+                        <div class="text-end">
+                            <button class="btn btn-primary-custom btn-custom mb-2" onclick="viewUserPreferences('${user.id}')">
+                                <i class="bi bi-eye"></i>
+                                Voir Détails
+                            </button>
+                            <button class="btn btn-success-custom btn-custom" onclick="generateMenuForUser('${user.id}')">
+                                <i class="bi bi-magic"></i>
+                                Générer Menu
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="preference-item">
+                                <span class="preference-label">Famille</span>
+                                <span class="preference-value">${user.adultsCount} adultes, ${user.childrenCount} enfants</span>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="preference-item">
+                                <span class="preference-label">Objectif</span>
+                                <span class="preference-value">${user.dietGoal || 'Aucun'}</span>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="preference-item">
+                                <span class="preference-label">Budget</span>
+                                <span class="preference-value">${user.budgetLevel || 'Non défini'}</span>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="preference-item">
+                                <span class="preference-label">Repas/semaine</span>
+                                <span class="preference-value">${user.weeklyRefinedMeals || 0} raffinés</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+            container.innerHTML = usersHTML;
+        }
+
+        function searchUsers() {
+            const searchTerm = document.getElementById('userSearch').value.toLowerCase();
+            
+            if (searchTerm === '') {
+                filteredUsers = [...allUsers];
+            } else {
+                filteredUsers = allUsers.filter(user => 
+                    user.name.toLowerCase().includes(searchTerm) ||
+                    user.email.toLowerCase().includes(searchTerm)
+                );
+            }
+            
+            displayUsers();
+        }
+
+        function filterUsers() {
+            const filter = document.getElementById('preferenceFilter').value;
+            
+            if (filter === '') {
+                filteredUsers = [...allUsers];
+            } else {
+                filteredUsers = allUsers.filter(user => {
+                    switch (filter) {
+                        case 'kosher':
+                            return user.kosherLevel && user.kosherLevel !== 'none';
+                        case 'vegan':
+                            return user.dietaryRestrictions && user.dietaryRestrictions.includes('vegan');
+                        case 'vegetarian':
+                            return user.dietaryRestrictions && user.dietaryRestrictions.includes('vegetarian');
+                        case 'allergies':
+                            return user.allergens && user.allergens.length > 0;
+                        case 'dietary_goals':
+                            return user.dietGoal && user.dietGoal !== 'none';
+                        default:
+                            return true;
+                    }
+                });
+            }
+            
+            displayUsers();
+        }
+
+        async function viewUserPreferences(userId) {
+            try {
+                const token = localStorage.getItem('adminToken');
+                const response = await fetch(`/api/users/${userId}`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    currentUser = data;
+                    populatePreferencesModal(data);
+                    
+                    const modal = new bootstrap.Modal(document.getElementById('preferencesModal'));
+                    modal.show();
+                } else {
+                    showError('Erreur lors du chargement des détails utilisateur');
+                }
+            } catch (error) {
+                console.error('Erreur:', error);
+                showError('Erreur de connexion');
+            }
+        }
+
+        function populatePreferencesModal(user) {
+            document.getElementById('modalUserName').textContent = user.name;
+            document.getElementById('modalAdultsCount').textContent = user.adultsCount || 0;
+            document.getElementById('modalChildrenCount').textContent = user.childrenCount || 0;
+            document.getElementById('modalCookingSkill').textContent = user.cookingSkillLevel || 'Non défini';
+            document.getElementById('modalPreferredDifficulty').textContent = user.preferredDifficulty || 'Non défini';
+            document.getElementById('modalKosherLevel').textContent = user.kosherLevel || 'Aucun';
+            
+            // Restrictions alimentaires
+            const restrictions = user.dietaryRestrictions || [];
+            document.getElementById('modalDietaryRestrictions').innerHTML = restrictions.length > 0 ? 
+                restrictions.map(r => `<span class="badge-custom badge-dietary me-1">${r}</span>`).join('') : 
+                '<span class="text-muted">Aucune</span>';
+            
+            // Allergènes
+            const allergens = user.allergens || [];
+            document.getElementById('modalAllergens').innerHTML = allergens.length > 0 ? 
+                allergens.map(a => `<span class="badge-custom badge-allergen me-1">${a}</span>`).join('') : 
+                '<span class="text-muted">Aucun</span>';
+            
+            // Ingrédients exclus
+            const excluded = user.excludedIngredients || [];
+            document.getElementById('modalExcludedIngredients').innerHTML = excluded.length > 0 ? 
+                excluded.map(e => `<span class="badge bg-secondary me-1">${e}</span>`).join('') : 
+                '<span class="text-muted">Aucun</span>';
+
+            // Objectifs santé
+            document.getElementById('modalDietGoal').textContent = user.dietGoal || 'Aucun';
+            document.getElementById('modalCurrentWeight').textContent = user.currentWeight ? `${user.currentWeight} kg` : 'Non défini';
+            document.getElementById('modalTargetWeight').textContent = user.targetWeight ? `${user.targetWeight} kg` : 'Non défini';
+            document.getElementById('modalDailyCalories').textContent = user.dailyCalorieTarget ? `${user.dailyCalorieTarget} kcal` : 'Non défini';
+
+            // Préférences de repas
+            document.getElementById('modalIncludeLunch').textContent = user.includeLunch ? 'Oui' : 'Non';
+            document.getElementById('modalIncludeDinner').textContent = user.includeDinner ? 'Oui' : 'Non';
+            document.getElementById('modalIncludeAdultMeals').textContent = user.includeAdultMeals ? 'Oui' : 'Non';
+            document.getElementById('modalIncludeChildMeals').textContent = user.includeChildMeals ? 'Oui' : 'Non';
+
+            // Planning et budget
+            document.getElementById('modalWeeklyRefinedMeals').textContent = user.weeklyRefinedMeals || 0;
+            document.getElementById('modalBudgetLevel').textContent = user.budgetLevel || 'Non défini';
+        }
+
+        async function generateMenuForUser(userId) {
+            // Cette fonction pourrait déclencher la génération d'un menu personnalisé
+            showSuccess('Fonctionnalité de génération de menu en développement');
+        }
+
+        async function editUserPreferences() {
+            // Cette fonction ouvrirait un formulaire d'édition
+            showSuccess('Fonctionnalité d\'édition en développement');
+        }
+
+        async function generatePersonalizedMenu() {
+            if (!currentUser) return;
+            
+            showSuccess(`Menu personnalisé en cours de génération pour ${currentUser.name}`);
+        }
+
+        async function resetUserPreferences() {
+            if (!currentUser) return;
+            
+            if (!confirm(`Êtes-vous sûr de vouloir réinitialiser les préférences de ${currentUser.name} ?`)) {
+                return;
+            }
+
+            showSuccess('Fonctionnalité de réinitialisation en développement');
+        }
+
+        async function exportUserPreferences() {
+            if (!currentUser) return;
+            
+            const dataStr = JSON.stringify(currentUser, null, 2);
+            const dataBlob = new Blob([dataStr], {type: 'application/json'});
+            
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(dataBlob);
+            link.download = `preferences_${currentUser.name.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.json`;
+            link.click();
+            
+            showSuccess('Données exportées avec succès');
+        }
+
+        function showSuccess(message) {
+            const alertHTML = `
+                <div class="alert alert-success alert-custom alert-dismissible fade show" role="alert">
+                    <i class="bi bi-check-circle me-2"></i>
+                    ${message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            `;
+            
+            const container = document.querySelector('.main-container');
+            container.insertAdjacentHTML('afterbegin', alertHTML);
+            
+            setTimeout(() => {
+                const alert = container.querySelector('.alert');
+                if (alert) alert.remove();
+            }, 5000);
+        }
+
+        function showError(message) {
+            const alertHTML = `
+                <div class="alert alert-danger alert-custom alert-dismissible fade show" role="alert">
+                    <i class="bi bi-exclamation-triangle me-2"></i>
+                    ${message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            `;
+            
+            const container = document.querySelector('.main-container');
+            container.insertAdjacentHTML('afterbegin', alertHTML);
+            
+            setTimeout(() => {
+                const alert = container.querySelector('.alert');
+                if (alert) alert.remove();
+            }, 5000);
+        }
+    </script>
+</body>
+</html>

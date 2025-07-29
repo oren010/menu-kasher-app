@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Activité Utilisateur - Administration Menu Kasher</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="assets/admin.css" rel="stylesheet">
+</head>
+<body>
+    <div class="admin-layout">
+        <!-- Sidebar sera chargée dynamiquement -->
+        
+        <div class="admin-content">
+            <!-- Header sera chargé dynamiquement -->
+            
+            <main class="admin-main">
+                <div class="page-header fade-in">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="d-flex align-items-center">
+                            <a href="javascript:history.back()" class="btn btn-outline-secondary me-3">
+                                <i class="bi bi-arrow-left me-2"></i>
+                                Retour
+                            </a>
+                            <div>
+                                <h1 class="page-title">
+                                    <i class="bi bi-clock-history me-2"></i>
+                                    Activité Utilisateur
+                                </h1>
+                                <p class="page-subtitle" id="userInfo">Chargement...</p>
+                            </div>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <button class="btn btn-outline-primary" onclick="exportActivity()">
+                                <i class="bi bi-download me-2"></i>
+                                Exporter
+                            </button>
+                            <button class="btn btn-outline-secondary" onclick="loadActivity()">
+                                <i class="bi bi-arrow-clockwise me-2"></i>
+                                Actualiser
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Filtres -->
+                <div class="card mb-4 fade-in">
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-3">
+                                <label class="form-label">Type d'action</label>
+                                <select class="form-select" id="filterAction" onchange="filterActivity()">
+                                    <option value="">Toutes les actions</option>
+                                    <option value="USER_LOGIN">Connexions</option>
+                                    <option value="USER_UPDATE_PROFILE">Modifications profil</option>
+                                    <option value="USER_CHANGE_PASSWORD">Changements mot de passe</option>
+                                    <option value="MENU_CREATE">Créations menu</option>
+                                    <option value="MENU_UPDATE">Modifications menu</option>
+                                    <option value="MENU_DELETE">Suppressions menu</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Statut</label>
+                                <select class="form-select" id="filterStatus" onchange="filterActivity()">
+                                    <option value="">Tous les statuts</option>
+                                    <option value="true">Succès</option>
+                                    <option value="false">Échec</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Date début</label>
+                                <input type="date" class="form-control" id="filterDateStart" onchange="filterActivity()">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Date fin</label>
+                                <input type="date" class="form-control" id="filterDateEnd" onchange="filterActivity()">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Statistiques -->
+                <div class="row g-4 mb-4 fade-in">
+                    <div class="col-md-3">
+                        <div class="widget">
+                            <div class="widget-header">
+                                <h3 class="widget-title">Total actions</h3>
+                                <div class="widget-icon primary">
+                                    <i class="bi bi-activity"></i>
+                                </div>
+                            </div>
+                            <div class="widget-value" id="totalActions">-</div>
+                            <p class="widget-label">Actions enregistrées</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="widget">
+                            <div class="widget-header">
+                                <h3 class="widget-title">Succès</h3>
+                                <div class="widget-icon success">
+                                    <i class="bi bi-check-circle"></i>
+                                </div>
+                            </div>
+                            <div class="widget-value" id="successActions">-</div>
+                            <p class="widget-label">Actions réussies</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="widget">
+                            <div class="widget-header">
+                                <h3 class="widget-title">Échecs</h3>
+                                <div class="widget-icon danger">
+                                    <i class="bi bi-x-circle"></i>
+                                </div>
+                            </div>
+                            <div class="widget-value" id="failedActions">-</div>
+                            <p class="widget-label">Actions échouées</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="widget">
+                            <div class="widget-header">
+                                <h3 class="widget-title">Dernière activité</h3>
+                                <div class="widget-icon info">
+                                    <i class="bi bi-clock"></i>
+                                </div>
+                            </div>
+                            <div class="widget-value small" id="lastActivity">-</div>
+                            <p class="widget-label">Activité récente</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Liste d'activité -->
+                <div class="card fade-in">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">
+                            <i class="bi bi-list-ul me-2"></i>
+                            Historique d'activité
+                        </h5>
+                        <div class="d-flex align-items-center">
+                            <span class="small text-muted me-3" id="activityCount">0 actions</span>
+                            <div class="dropdown">
+                                <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                    <span id="limitText">50</span> par page
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="#" onclick="changeLimit(25)">25 par page</a></li>
+                                    <li><a class="dropdown-item" href="#" onclick="changeLimit(50)">50 par page</a></li>
+                                    <li><a class="dropdown-item" href="#" onclick="changeLimit(100)">100 par page</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body p-0">
+                        <div id="activityList" class="loading">
+                            <div class="text-center py-4">
+                                <div class="spinner-border" role="status">
+                                    <span class="visually-hidden">Chargement...</span>
+                                </div>
+                                <p class="mt-2 text-muted">Chargement de l'activité...</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Pagination -->
+                    <div class="card-footer">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="small text-muted" id="paginationInfo">-</div>
+                            <nav>
+                                <ul class="pagination pagination-sm mb-0" id="pagination">
+                                    <!-- Pagination sera générée dynamiquement -->
+                                </ul>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/admin.js"></script>
+    <script>
+        let currentUserId = null;
+        let currentUser = null;
+        let allActivities = [];
+        let filteredActivities = [];
+        let currentPage = 1;
+        let itemsPerPage = 50;
+
+        // Initialisation
+        document.addEventListener('DOMContentLoaded', async function() {
+            await initUserActivity();
+        });
+
+        async function initUserActivity() {
+            try {
+                // Récupérer l'ID utilisateur depuis l'URL
+                const urlParams = new URLSearchParams(window.location.search);
+                currentUserId = urlParams.get('id');
+                
+                if (!currentUserId) {
+                    AdminApp.Utils.toast('ID utilisateur manquant', 'danger');
+                    return;
+                }
+
+                // Charger les données
+                await Promise.all([
+                    loadUserInfo(),
+                    loadActivity()
+                ]);
+                
+            } catch (error) {
+                console.error('Erreur lors de l\'initialisation:', error);
+                AdminApp.Utils.toast('Erreur lors du chargement', 'danger');
+            }
+        }
+
+        async function loadUserInfo() {
+            try {
+                const response = await AdminApp.Utils.api.get(`/users/${currentUserId}`);
+                
+                if (response.success) {
+                    currentUser = response.user;
+                    document.getElementById('userInfo').textContent = 
+                        `Activité de ${currentUser.name} (${currentUser.email})`;
+                }
+            } catch (error) {
+                console.error('Erreur lors du chargement utilisateur:', error);
+            }
+        }
+
+        async function loadActivity() {
+            try {
+                const response = await AdminApp.Utils.api.get(`/users/${currentUserId}/activity?limit=1000`);
+                
+                if (response.success) {
+                    allActivities = response.activities || [];
+                    filteredActivities = [...allActivities];
+                    
+                    updateStatistics();
+                    updateActivityList();
+                    updatePagination();
+                } else {
+                    throw new Error(response.message || 'Erreur lors du chargement');
+                }
+                
+            } catch (error) {
+                console.error('Erreur lors du chargement de l\'activité:', error);
+                document.getElementById('activityList').innerHTML = `
+                    <div class="text-center py-4 text-danger">
+                        <i class="bi bi-exclamation-triangle fs-1"></i>
+                        <div class="mt-2">Erreur lors du chargement de l'activité</div>
+                    </div>
+                `;
+            }
+        }
+
+        function updateStatistics() {
+            const total = filteredActivities.length;
+            const success = filteredActivities.filter(a => a.success).length;
+            const failed = total - success;
+            const lastActivity = filteredActivities.length > 0 ? filteredActivities[0] : null;
+
+            document.getElementById('totalActions').textContent = AdminApp.Utils.formatNumber(total);
+            document.getElementById('successActions').textContent = AdminApp.Utils.formatNumber(success);
+            document.getElementById('failedActions').textContent = AdminApp.Utils.formatNumber(failed);
+            document.getElementById('lastActivity').textContent = lastActivity ? 
+                AdminApp.Utils.formatDate(lastActivity.createdAt, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : 
+                'Aucune';
+        }
+
+        function updateActivityList() {
+            const container = document.getElementById('activityList');
+            const start = (currentPage - 1) * itemsPerPage;
+            const end = start + itemsPerPage;
+            const pageActivities = filteredActivities.slice(start, end);
+
+            if (pageActivities.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-4 text-muted">
+                        <i class="bi bi-clock-history fs-1"></i>
+                        <div class="mt-2">Aucune activité trouvée</div>
+                    </div>
+                `;
+                document.getElementById('activityCount').textContent = '0 actions';
+                return;
+            }
+
+            container.innerHTML = pageActivities.map(activity => `
+                <div class="d-flex align-items-start p-3 border-bottom activity-item" data-action="${activity.action}" data-success="${activity.success}">
+                    <div class="bg-${getActivityColor(activity.action)} rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">
+                        <i class="bi bi-${getActivityIcon(activity.action)} text-white"></i>
+                    </div>
+                    <div class="flex-grow-1">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <div class="fw-semibold">${getActivityMessage(activity.action)}</div>
+                                <div class="small text-muted mt-1">
+                                    <i class="bi bi-clock me-1"></i>
+                                    ${AdminApp.Utils.formatDate(activity.createdAt, { 
+                                        year: 'numeric', 
+                                        month: 'short', 
+                                        day: 'numeric', 
+                                        hour: '2-digit', 
+                                        minute: '2-digit' 
+                                    })}
+                                    ${activity.ipAddress ? `<i class="bi bi-geo-alt ms-3 me-1"></i>${activity.ipAddress}` : ''}
+                                    ${activity.endpoint ? `<i class="bi bi-link ms-3 me-1"></i>${activity.httpMethod} ${activity.endpoint}` : ''}
+                                </div>
+                                ${activity.newData ? `
+                                    <details class="mt-2">
+                                        <summary class="small text-muted" style="cursor: pointer;">
+                                            <i class="bi bi-info-circle me-1"></i>Détails de l'action
+                                        </summary>
+                                        <pre class="small bg-light p-2 mt-1 rounded" style="font-size: 11px; max-height: 200px; overflow-y: auto;">${JSON.stringify(activity.newData, null, 2)}</pre>
+                                    </details>
+                                ` : ''}
+                            </div>
+                            <div>
+                                <span class="badge bg-${activity.success ? 'success' : 'danger'}">
+                                    <i class="bi bi-${activity.success ? 'check' : 'x'} me-1"></i>
+                                    ${activity.success ? 'Succès' : 'Échec'}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+            document.getElementById('activityCount').textContent = 
+                `${AdminApp.Utils.formatNumber(filteredActivities.length)} action${filteredActivities.length > 1 ? 's' : ''}`;
+        }
+
+        function filterActivity() {
+            const actionFilter = document.getElementById('filterAction').value;
+            const statusFilter = document.getElementById('filterStatus').value;
+            const dateStartFilter = document.getElementById('filterDateStart').value;
+            const dateEndFilter = document.getElementById('filterDateEnd').value;
+
+            filteredActivities = allActivities.filter(activity => {
+                // Filter par action
+                if (actionFilter && activity.action !== actionFilter) {
+                    return false;
+                }
+
+                // Filter par statut
+                if (statusFilter !== '' && activity.success.toString() !== statusFilter) {
+                    return false;
+                }
+
+                // Filter par date de début
+                if (dateStartFilter) {
+                    const activityDate = new Date(activity.createdAt).toISOString().split('T')[0];
+                    if (activityDate < dateStartFilter) {
+                        return false;
+                    }
+                }
+
+                // Filter par date de fin
+                if (dateEndFilter) {
+                    const activityDate = new Date(activity.createdAt).toISOString().split('T')[0];
+                    if (activityDate > dateEndFilter) {
+                        return false;
+                    }
+                }
+
+                return true;
+            });
+
+            currentPage = 1; // Reset à la première page
+            updateStatistics();
+            updateActivityList();
+            updatePagination();
+        }
+
+        function updatePagination() {
+            const totalPages = Math.ceil(filteredActivities.length / itemsPerPage);
+            const paginationContainer = document.getElementById('pagination');
+            
+            // Info pagination
+            const start = Math.min((currentPage - 1) * itemsPerPage + 1, filteredActivities.length);
+            const end = Math.min(currentPage * itemsPerPage, filteredActivities.length);
+            document.getElementById('paginationInfo').textContent = 
+                `${start}-${end} sur ${filteredActivities.length} actions`;
+
+            if (totalPages <= 1) {
+                paginationContainer.innerHTML = '';
+                return;
+            }
+
+            let paginationHTML = '';
+            
+            // Bouton précédent
+            paginationHTML += `
+                <li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
+                    <button class="page-link" onclick="changePage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>
+                        <i class="bi bi-chevron-left"></i>
+                    </button>
+                </li>
+            `;
+
+            // Pages
+            const startPage = Math.max(1, currentPage - 2);
+            const endPage = Math.min(totalPages, currentPage + 2);
+
+            if (startPage > 1) {
+                paginationHTML += `<li class="page-item"><button class="page-link" onclick="changePage(1)">1</button></li>`;
+                if (startPage > 2) {
+                    paginationHTML += `<li class="page-item disabled"><span class="page-link">...</span></li>`;
+                }
+            }
+
+            for (let i = startPage; i <= endPage; i++) {
+                paginationHTML += `
+                    <li class="page-item ${i === currentPage ? 'active' : ''}">
+                        <button class="page-link" onclick="changePage(${i})">${i}</button>
+                    </li>
+                `;
+            }
+
+            if (endPage < totalPages) {
+                if (endPage < totalPages - 1) {
+                    paginationHTML += `<li class="page-item disabled"><span class="page-link">...</span></li>`;
+                }
+                paginationHTML += `<li class="page-item"><button class="page-link" onclick="changePage(${totalPages})">${totalPages}</button></li>`;
+            }
+
+            // Bouton suivant
+            paginationHTML += `
+                <li class="page-item ${currentPage === totalPages ? 'disabled' : ''}">
+                    <button class="page-link" onclick="changePage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}>
+                        <i class="bi bi-chevron-right"></i>
+                    </button>
+                </li>
+            `;
+
+            paginationContainer.innerHTML = paginationHTML;
+        }
+
+        function changePage(page) {
+            const totalPages = Math.ceil(filteredActivities.length / itemsPerPage);
+            if (page < 1 || page > totalPages) return;
+            
+            currentPage = page;
+            updateActivityList();
+            updatePagination();
+        }
+
+        function changeLimit(newLimit) {
+            itemsPerPage = newLimit;
+            currentPage = 1;
+            document.getElementById('limitText').textContent = newLimit;
+            updateActivityList();
+            updatePagination();
+        }
+
+        // Utilitaires (réutilisés depuis user-detail.html)
+        function getActivityColor(action) {
+            const colors = {
+                'USER_LOGIN': 'success',
+                'USER_UPDATE_PROFILE': 'primary',
+                'USER_CHANGE_PASSWORD': 'warning',
+                'MENU_CREATE': 'info',
+                'MENU_UPDATE': 'info',
+                'MENU_DELETE': 'danger'
+            };
+            return colors[action] || 'secondary';
+        }
+
+        function getActivityIcon(action) {
+            const icons = {
+                'USER_LOGIN': 'box-arrow-in-right',
+                'USER_UPDATE_PROFILE': 'person-gear',
+                'USER_CHANGE_PASSWORD': 'key',
+                'MENU_CREATE': 'calendar-plus',
+                'MENU_UPDATE': 'calendar-check',
+                'MENU_DELETE': 'calendar-x'
+            };
+            return icons[action] || 'activity';
+        }
+
+        function getActivityMessage(action) {
+            const messages = {
+                'USER_LOGIN': 'Connexion utilisateur',
+                'USER_UPDATE_PROFILE': 'Mise à jour du profil',
+                'USER_CHANGE_PASSWORD': 'Changement de mot de passe',
+                'MENU_CREATE': 'Création d\'un menu',
+                'MENU_UPDATE': 'Modification d\'un menu',
+                'MENU_DELETE': 'Suppression d\'un menu'
+            };
+            return messages[action] || 'Action utilisateur';
+        }
+
+        function exportActivity() {
+            try {
+                // Créer les données d'export
+                const exportData = filteredActivities.map(activity => ({
+                    'Date/Heure': AdminApp.Utils.formatDate(activity.createdAt, { 
+                        year: 'numeric', 
+                        month: '2-digit', 
+                        day: '2-digit', 
+                        hour: '2-digit', 
+                        minute: '2-digit' 
+                    }),
+                    'Action': getActivityMessage(activity.action),
+                    'Type': activity.action,
+                    'Statut': activity.success ? 'Succès' : 'Échec',
+                    'Adresse IP': activity.ipAddress || '-',
+                    'Endpoint': activity.endpoint || '-',
+                    'Méthode HTTP': activity.httpMethod || '-'
+                }));
+
+                // Convertir en CSV
+                const csv = convertToCSV(exportData);
+                
+                // Télécharger
+                const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+                const link = document.createElement('a');
+                const url = URL.createObjectURL(blob);
+                link.setAttribute('href', url);
+                link.setAttribute('download', `activite-${currentUser?.name || 'utilisateur'}-${new Date().toISOString().split('T')[0]}.csv`);
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+
+                AdminApp.Utils.toast('Export téléchargé avec succès!', 'success');
+                
+            } catch (error) {
+                console.error('Erreur lors de l\'export:', error);
+                AdminApp.Utils.toast('Erreur lors de l\'export', 'danger');
+            }
+        }
+
+        function convertToCSV(data) {
+            if (!data.length) return '';
+            
+            const headers = Object.keys(data[0]);
+            const csvContent = [
+                headers.join(','),
+                ...data.map(row => 
+                    headers.map(header => 
+                        JSON.stringify(row[header] || '')
+                    ).join(',')
+                )
+            ].join('\n');
+            
+            return csvContent;
+        }
+    </script>
+</body>
+</html>

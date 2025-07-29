@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test API - Administration Menu Kasher</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="assets/admin.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container-fluid py-4">
+        <div class="row">
+            <div class="col-12">
+                <h1 class="mb-4">Test des APIs d'Administration</h1>
+                
+                <!-- Login Admin -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5>1. Connexion Admin</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3 align-items-end">
+                            <div class="col-md-4">
+                                <label class="form-label">Email</label>
+                                <input type="email" class="form-control" id="adminEmail" value="admin@menu-kasher.app">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Mot de passe</label>
+                                <input type="password" class="form-control" id="adminPassword" value="Admin123!">
+                            </div>
+                            <div class="col-md-4">
+                                <button class="btn btn-primary" onclick="testAdminLogin()">
+                                    <i class="bi bi-box-arrow-in-right me-2"></i>
+                                    Se connecter
+                                </button>
+                            </div>
+                        </div>
+                        <div id="loginResult" class="mt-3"></div>
+                    </div>
+                </div>
+
+                <!-- Test APIs -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5>2. Tests des APIs</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-3">
+                                <button class="btn btn-outline-primary w-100" onclick="testUsersStats()">
+                                    <i class="bi bi-graph-up me-2"></i>
+                                    Stats Utilisateurs
+                                </button>
+                            </div>
+                            <div class="col-md-3">
+                                <button class="btn btn-outline-success w-100" onclick="testUsersList()">
+                                    <i class="bi bi-people me-2"></i>
+                                    Liste Utilisateurs
+                                </button>
+                            </div>
+                            <div class="col-md-3">
+                                <button class="btn btn-outline-info w-100" onclick="testGlobalStats()">
+                                    <i class="bi bi-bar-chart me-2"></i>
+                                    Stats Globales
+                                </button>
+                            </div>
+                            <div class="col-md-3">
+                                <button class="btn btn-outline-warning w-100" onclick="testUserDetail()">
+                                    <i class="bi bi-person me-2"></i>
+                                    Détail Utilisateur
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Résultats -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5>3. Résultats des Tests</h5>
+                    </div>
+                    <div class="card-body">
+                        <pre id="testResults" class="bg-light p-3" style="height: 400px; overflow-y: auto; font-size: 12px;"></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/admin.js"></script>
+    <script>
+        let authToken = null;
+        
+        function log(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            const results = document.getElementById('testResults');
+            const prefix = type === 'error' ? '❌' : type === 'success' ? '✅' : 'ℹ️';
+            results.textContent += `[${timestamp}] ${prefix} ${message}\n`;
+            results.scrollTop = results.scrollHeight;
+        }
+
+        async function testAdminLogin() {
+            try {
+                log('🔄 Test de connexion admin...');
+                
+                const email = document.getElementById('adminEmail').value;
+                const password = document.getElementById('adminPassword').value;
+                
+                const response = await fetch('/api/auth/admin/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email, password })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    authToken = data.accessToken;
+                    log('Connexion admin réussie!', 'success');
+                    log(`Token reçu: ${authToken.substring(0, 50)}...`);
+                    
+                    document.getElementById('loginResult').innerHTML = `
+                        <div class="alert alert-success">
+                            <i class="bi bi-check-circle me-2"></i>
+                            Connecté en tant que: <strong>${data.admin.name}</strong> (${data.admin.role})
+                        </div>
+                    `;
+                } else {
+                    throw new Error(data.message || 'Erreur inconnue');
+                }
+                
+            } catch (error) {
+                log(`Erreur de connexion: ${error.message}`, 'error');
+                document.getElementById('loginResult').innerHTML = `
+                    <div class="alert alert-danger">
+                        <i class="bi bi-x-circle me-2"></i>
+                        Erreur: ${error.message}
+                    </div>
+                `;
+            }
+        }
+
+        async function testUsersStats() {
+            if (!authToken) {
+                log('⚠️ Veuillez vous connecter d\'abord', 'error');
+                return;
+            }
+            
+            try {
+                log('🔄 Test des statistiques utilisateurs...');
+                
+                const response = await fetch('/api/users/stats/overview', {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    log('Statistiques utilisateurs récupérées!', 'success');
+                    log(`Total: ${data.stats.totalUsers}, Actifs: ${data.stats.activeUsers}, Nouveaux: ${data.stats.newUsersThisWeek}`);
+                } else {
+                    throw new Error(data.message);
+                }
+                
+            } catch (error) {
+                log(`Erreur stats utilisateurs: ${error.message}`, 'error');
+            }
+        }
+
+        async function testUsersList() {
+            if (!authToken) {
+                log('⚠️ Veuillez vous connecter d\'abord', 'error');
+                return;
+            }
+            
+            try {
+                log('🔄 Test de la liste des utilisateurs...');
+                
+                const response = await fetch('/api/users', {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    log('Liste des utilisateurs récupérée!', 'success');
+                    log(`${data.users.length} utilisateurs trouvés`);
+                    data.users.forEach(user => {
+                        log(`- ${user.name} (${user.email}) - ${user.isActive ? 'Actif' : 'Inactif'}`);
+                    });
+                } else {
+                    throw new Error(data.message);
+                }
+                
+            } catch (error) {
+                log(`Erreur liste utilisateurs: ${error.message}`, 'error');
+            }
+        }
+
+        async function testGlobalStats() {
+            if (!authToken) {
+                log('⚠️ Veuillez vous connecter d\'abord', 'error');
+                return;
+            }
+            
+            try {
+                log('🔄 Test des statistiques globales...');
+                
+                const response = await fetch('/api/stats', {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                });
+                
+                const data = await response.json();
+                
+                log('Statistiques globales récupérées!', 'success');
+                log(`Recettes: ${data.recipes}, Menus: ${data.menus}, Ingrédients: ${data.ingredients}`);
+                
+            } catch (error) {
+                log(`Erreur stats globales: ${error.message}`, 'error');
+            }
+        }
+
+        async function testUserDetail() {
+            if (!authToken) {
+                log('⚠️ Veuillez vous connecter d\'abord', 'error');
+                return;
+            }
+            
+            try {
+                log('🔄 Test du détail utilisateur...');
+                
+                // D'abord récupérer la liste pour avoir un ID
+                const listResponse = await fetch('/api/users', {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                });
+                
+                const listData = await listResponse.json();
+                
+                if (listData.success && listData.users.length > 0) {
+                    const userId = listData.users[0].id;
+                    
+                    const response = await fetch(`/api/users/${userId}`, {
+                        headers: {
+                            'Authorization': `Bearer ${authToken}`
+                        }
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        log('Détail utilisateur récupéré!', 'success');
+                        log(`Utilisateur: ${data.user.name} - ${data.user.menus.length} menus`);
+                    } else {
+                        throw new Error(data.message);
+                    }
+                } else {
+                    log('Aucun utilisateur trouvé pour le test de détail', 'error');
+                }
+                
+            } catch (error) {
+                log(`Erreur détail utilisateur: ${error.message}`, 'error');
+            }
+        }
+
+        // Auto-login au chargement pour les tests
+        document.addEventListener('DOMContentLoaded', function() {
+            log('🚀 Page de test des APIs chargée');
+            log('Cliquez sur "Se connecter" puis testez les différentes APIs');
+        });
+    </script>
+</body>
+</html>

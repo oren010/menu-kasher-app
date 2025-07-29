@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administration - Menu Kasher</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="assets/admin.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .login-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            max-width: 400px;
+            width: 100%;
+            margin: 20px;
+        }
+
+        .login-header {
+            background: linear-gradient(135deg, #2E5266 0%, #6C9BD1 100%);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .login-header h1 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .login-header p {
+            margin: 0;
+            opacity: 0.9;
+            font-size: 0.9rem;
+        }
+
+        .login-body {
+            padding: 2rem;
+        }
+
+        .form-floating {
+            margin-bottom: 1rem;
+        }
+
+        .form-control {
+            border-radius: 12px;
+            border: 2px solid #e1e5e9;
+            padding: 0.75rem 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: #6C9BD1;
+            box-shadow: 0 0 0 0.2rem rgba(108, 155, 209, 0.25);
+        }
+
+        .btn-login {
+            background: linear-gradient(135deg, #2E5266 0%, #6C9BD1 100%);
+            border: none;
+            border-radius: 12px;
+            padding: 0.75rem 2rem;
+            font-weight: 600;
+            color: white;
+            width: 100%;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+        }
+
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(46, 82, 102, 0.3);
+            color: white;
+        }
+
+        .btn-login:disabled {
+            opacity: 0.6;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .alert {
+            border-radius: 12px;
+            border: none;
+            margin-bottom: 1rem;
+        }
+
+        .loading-spinner {
+            display: none;
+        }
+
+        .login-footer {
+            background: #f8f9fa;
+            padding: 1rem 2rem;
+            text-align: center;
+            border-top: 1px solid #e1e5e9;
+        }
+
+        .login-footer a {
+            color: #6C9BD1;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .login-footer a:hover {
+            text-decoration: underline;
+        }
+
+        .security-info {
+            background: rgba(108, 155, 209, 0.1);
+            border-radius: 12px;
+            padding: 1rem;
+            margin-top: 1rem;
+            font-size: 0.85rem;
+            color: #2E5266;
+        }
+
+        .security-info i {
+            color: #6C9BD1;
+            margin-right: 0.5rem;
+        }
+
+        @media (max-width: 480px) {
+            .login-container {
+                margin: 10px;
+                border-radius: 15px;
+            }
+            
+            .login-header, .login-body {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-header">
+            <i class="bi bi-shield-lock-fill fs-1 mb-3"></i>
+            <h1>Administration</h1>
+            <p>Menu Kasher Familial</p>
+        </div>
+
+        <div class="login-body">
+            <div id="alert-container"></div>
+
+            <form id="loginForm">
+                <div class="form-floating">
+                    <input type="email" class="form-control" id="email" name="email" placeholder="admin@menu-kasher.app" required autocomplete="username">
+                    <label for="email">
+                        <i class="bi bi-envelope me-2"></i>Adresse email
+                    </label>
+                </div>
+
+                <div class="form-floating">
+                    <input type="password" class="form-control" id="password" name="password" placeholder="Mot de passe" required autocomplete="current-password">
+                    <label for="password">
+                        <i class="bi bi-lock me-2"></i>Mot de passe
+                    </label>
+                </div>
+
+                <div class="form-check mb-3">
+                    <input class="form-check-input" type="checkbox" id="rememberMe" name="rememberMe">
+                    <label class="form-check-label" for="rememberMe">
+                        Se souvenir de moi
+                    </label>
+                </div>
+
+                <button type="submit" class="btn btn-login" id="loginBtn">
+                    <span class="login-text">
+                        <i class="bi bi-box-arrow-in-right me-2"></i>
+                        Se connecter
+                    </span>
+                    <span class="loading-spinner">
+                        <span class="spinner-border spinner-border-sm me-2" role="status">
+                            <span class="visually-hidden">Chargement...</span>
+                        </span>
+                        Connexion...
+                    </span>
+                </button>
+            </form>
+
+            <div class="security-info">
+                <i class="bi bi-info-circle"></i>
+                <strong>Accès sécurisé :</strong> Cette interface est protégée par authentification multi-niveaux et surveillance des tentatives de connexion.
+            </div>
+        </div>
+
+        <div class="login-footer">
+            <a href="../" class="me-3">
+                <i class="bi bi-arrow-left me-1"></i>
+                Retour au site
+            </a>
+            <a href="#" onclick="showHelp()">
+                <i class="bi bi-question-circle me-1"></i>
+                Aide
+            </a>
+        </div>
+    </div>
+
+    <!-- Modal d'aide -->
+    <div class="modal fade" id="helpModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="bi bi-question-circle me-2"></i>
+                        Aide - Connexion Administration
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <h6><i class="bi bi-key me-2"></i>Identifiants par défaut :</h6>
+                    <div class="bg-light p-3 rounded mb-3">
+                        <strong>Email :</strong> admin@menu-kasher.app<br>
+                        <strong>Mot de passe :</strong> Admin123!
+                    </div>
+
+                    <h6><i class="bi bi-shield-check me-2"></i>Sécurité :</h6>
+                    <ul>
+                        <li>Maximum 5 tentatives de connexion par 15 minutes</li>
+                        <li>Le compte se verrouille automatiquement en cas d'abus</li>
+                        <li>Toutes les actions sont enregistrées dans les logs d'audit</li>
+                    </ul>
+
+                    <h6><i class="bi bi-exclamation-triangle me-2"></i>Problèmes courants :</h6>
+                    <ul>
+                        <li><strong>Compte verrouillé :</strong> Attendez 15 minutes ou contactez un super-administrateur</li>
+                        <li><strong>Mot de passe oublié :</strong> Utilisez la fonction de réinitialisation ou contactez le support</li>
+                        <li><strong>Erreur de connexion :</strong> Vérifiez votre connexion internet et réessayez</li>
+                    </ul>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Configuration
+        const API_BASE = '/api/auth';
+        
+        // Éléments DOM
+        const loginForm = document.getElementById('loginForm');
+        const loginBtn = document.getElementById('loginBtn');
+        const alertContainer = document.getElementById('alert-container');
+        
+        // État de l'application
+        let isLoading = false;
+
+        // Initialisation
+        document.addEventListener('DOMContentLoaded', function() {
+            // Vérifier si déjà connecté - DÉSACTIVÉ temporairement pour éviter les boucles
+            // checkExistingAuth();
+            
+            // Focus automatique sur l'email
+            document.getElementById('email').focus();
+            
+            // Gestion du formulaire
+            loginForm.addEventListener('submit', handleLogin);
+            
+            // Gestion des touches
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' && !isLoading) {
+                    loginForm.requestSubmit();
+                }
+            });
+        });
+
+        // Vérifier si l'utilisateur est déjà connecté
+        async function checkExistingAuth() {
+            const token = localStorage.getItem('adminToken');
+            if (token) {
+                try {
+                    const response = await fetch(`${API_BASE}/admin/me`, {
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                            'Content-Type': 'application/json'
+                        }
+                    });
+                    
+                    if (response.ok) {
+                        // Déjà connecté, rediriger vers le dashboard
+                        window.location.href = 'dashboard.html';
+                        return;
+                    } else if (response.status === 429) {
+                        // Rate limited - ne pas supprimer le token, juste passer
+                        console.log('Rate limited lors de la vérification auth - token conservé');
+                        return;
+                    } else {
+                        // Token invalide, le supprimer
+                        localStorage.removeItem('adminToken');
+                    }
+                } catch (error) {
+                    console.log('Vérification auth échouée:', error);
+                    // En cas d'erreur réseau, ne pas supprimer le token
+                    if (error.name !== 'TypeError') {
+                        localStorage.removeItem('adminToken');
+                    }
+                }
+            }
+        }
+
+        // Gestion de la connexion
+        async function handleLogin(e) {
+            e.preventDefault();
+            
+            if (isLoading) return;
+            
+            const formData = new FormData(loginForm);
+            const email = formData.get('email').trim();
+            const password = formData.get('password');
+            const rememberMe = formData.get('rememberMe') === 'on';
+            
+            // Validation côté client
+            if (!email || !password) {
+                showAlert('Veuillez remplir tous les champs.', 'warning');
+                return;
+            }
+            
+            if (!email.includes('@')) {
+                showAlert('Veuillez entrer une adresse email valide.', 'warning');
+                return;
+            }
+            
+            // Démarrer le loading
+            setLoading(true);
+            clearAlerts();
+            
+            try {
+                const response = await fetch(`${API_BASE}/admin/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email, password })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.success) {
+                    // Connexion réussie
+                    localStorage.setItem('adminToken', data.accessToken);
+                    localStorage.setItem('adminUser', JSON.stringify(data.admin));
+                    
+                    if (rememberMe) {
+                        localStorage.setItem('adminRememberMe', 'true');
+                    }
+                    
+                    showAlert('Connexion réussie ! Redirection...', 'success');
+                    
+                    // Redirection après un court délai
+                    setTimeout(() => {
+                        window.location.href = 'dashboard.html';
+                    }, 1000);
+                    
+                } else {
+                    // Erreur de connexion
+                    let message = data.message || 'Erreur de connexion';
+                    
+                    if (response.status === 401) {
+                        message = 'Email ou mot de passe incorrect';
+                    } else if (response.status === 423) {
+                        message = data.message; // Message de verrouillage spécifique
+                    } else if (response.status === 429) {
+                        message = 'Trop de tentatives. Veuillez patienter avant de réessayer.';
+                    }
+                    
+                    showAlert(message, 'danger');
+                }
+                
+            } catch (error) {
+                console.error('Erreur lors de la connexion:', error);
+                
+                if (error.name === 'TypeError' && error.message.includes('fetch')) {
+                    showAlert('Impossible de se connecter au serveur. Vérifiez votre connexion internet.', 'danger');
+                } else {
+                    showAlert('Une erreur technique est survenue. Veuillez réessayer.', 'danger');
+                }
+            }
+            
+            // Arrêter le loading
+            setLoading(false);
+        }
+
+        // Gestion du state de loading
+        function setLoading(loading) {
+            isLoading = loading;
+            const loginTextSpan = loginBtn.querySelector('.login-text');
+            const loadingSpinner = loginBtn.querySelector('.loading-spinner');
+            
+            if (loading) {
+                loginBtn.disabled = true;
+                loginTextSpan.style.display = 'none';
+                loadingSpinner.style.display = 'inline';
+            } else {
+                loginBtn.disabled = false;
+                loginTextSpan.style.display = 'inline';
+                loadingSpinner.style.display = 'none';
+            }
+        }
+
+        // Affichage des alertes
+        function showAlert(message, type = 'info', autoHide = true) {
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type} alert-dismissible fade show`;
+            alert.role = 'alert';
+            
+            let icon = 'info-circle';
+            if (type === 'success') icon = 'check-circle';
+            else if (type === 'danger') icon = 'exclamation-triangle';
+            else if (type === 'warning') icon = 'exclamation-triangle';
+            
+            alert.innerHTML = `
+                <i class="bi bi-${icon} me-2"></i>
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            
+            alertContainer.appendChild(alert);
+            
+            // Auto-hide après 5 secondes pour les messages de succès
+            if (autoHide && type === 'success') {
+                setTimeout(() => {
+                    if (alert.parentNode) {
+                        alert.remove();
+                    }
+                }, 5000);
+            }
+        }
+
+        // Effacer les alertes
+        function clearAlerts() {
+            alertContainer.innerHTML = '';
+        }
+
+        // Afficher l'aide
+        function showHelp() {
+            const helpModal = new bootstrap.Modal(document.getElementById('helpModal'));
+            helpModal.show();
+        }
+
+        // Gestion des erreurs globales
+        window.addEventListener('error', function(e) {
+            console.error('Erreur JavaScript:', e.error);
+            if (isLoading) {
+                setLoading(false);
+                showAlert('Une erreur technique est survenue. Veuillez actualiser la page.', 'danger');
+            }
+        });
+
+        // Gestion des erreurs de réseau
+        window.addEventListener('online', function() {
+            showAlert('Connexion internet rétablie.', 'success', true);
+        });
+
+        window.addEventListener('offline', function() {
+            showAlert('Connexion internet perdue. Certaines fonctionnalités peuvent être indisponibles.', 'warning', false);
+        });
+    </script>
+</body>
+</html>

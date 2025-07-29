@@ -1,0 +1,160 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String   @id @default(cuid())
+  email         String   @unique
+  name          String
+  familySize    Int      @default(4)
+  childrenCount Int      @default(2)
+  kosherLevel   String   @default("strict") // strict, moderate, basic
+  allergies     String[] @default([])
+  preferences   String[] @default([])
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  menus         Menu[]
+  shoppingLists ShoppingList[]
+
+  @@map("users")
+}
+
+model Category {
+  id          String @id @default(cuid())
+  name        String @unique
+  displayName String
+  orderIndex  Int    @default(0)
+
+  ingredients Ingredient[]
+
+  @@map("categories")
+}
+
+model Ingredient {
+  id         String  @id @default(cuid())
+  name       String  @unique
+  unit       String  @default("g") // g, ml, piece, bunch, etc.
+  category   Category @relation(fields: [categoryId], references: [id])
+  categoryId String
+  isKosher   Boolean @default(true)
+  
+  recipeIngredients RecipeIngredient[]
+  shoppingListItems ShoppingListItem[]
+
+  @@map("ingredients")
+}
+
+model Recipe {
+  id              String    @id @default(cuid())
+  name            String
+  description     String?
+  servings        Int       @default(4)
+  prepTime        Int?      // in minutes
+  cookTime        Int?      // in minutes
+  difficulty      String    @default("medium") // easy, medium, hard
+  mealType        String    // lunch_children, dinner_children, dinner_adults
+  isKosher        Boolean   @default(true)
+  instructions    String[]  @default([])
+  tips            String[]  @default([])
+  suggestedDrink  String?
+  ustensils       String[]  @default([])
+  tags            String[]  @default([])
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  ingredients     RecipeIngredient[]
+  meals           Meal[]
+
+  @@map("recipes")
+}
+
+model RecipeIngredient {
+  id           String     @id @default(cuid())
+  recipe       Recipe     @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+  recipeId     String
+  ingredient   Ingredient @relation(fields: [ingredientId], references: [id])
+  ingredientId String
+  quantity     Float
+  unit         String?    // Override ingredient default unit if needed
+  notes        String?    // "finely chopped", "room temperature", etc.
+
+  @@unique([recipeId, ingredientId])
+  @@map("recipe_ingredients")
+}
+
+model Menu {
+  id        String   @id @default(cuid())
+  name      String
+  startDate DateTime
+  endDate   DateTime
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  isActive  Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  meals         Meal[]
+  shoppingLists ShoppingList[]
+
+  @@map("menus")
+}
+
+model Meal {
+  id       String   @id @default(cuid())
+  menu     Menu     @relation(fields: [menuId], references: [id], onDelete: Cascade)
+  menuId   String
+  date     DateTime
+  mealType String   // lunch_children, dinner_children, dinner_adults
+  recipe   Recipe?  @relation(fields: [recipeId], references: [id])
+  recipeId String?
+  notes    String?
+
+  @@unique([menuId, date, mealType])
+  @@map("meals")
+}
+
+model ShoppingList {
+  id        String   @id @default(cuid())
+  menu      Menu     @relation(fields: [menuId], references: [id])
+  menuId    String
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  items ShoppingListItem[]
+
+  @@map("shopping_lists")
+}
+
+model ShoppingListItem {
+  id             String       @id @default(cuid())
+  shoppingList   ShoppingList @relation(fields: [shoppingListId], references: [id], onDelete: Cascade)
+  shoppingListId String
+  ingredient     Ingredient   @relation(fields: [ingredientId], references: [id])
+  ingredientId   String
+  quantity       Float
+  unit           String
+  isPurchased    Boolean      @default(false)
+  notes          String?
+
+  @@unique([shoppingListId, ingredientId])
+  @@map("shopping_list_items")
+}
+
+model Settings {
+  id                    String   @id @default(cuid())
+  key                   String   @unique
+  value                 String
+  description           String?
+  updatedAt             DateTime @updatedAt
+
+  @@map("settings")
+}

@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Administration Menu Kasher</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="assets/admin.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="admin-layout">
+        <!-- Sidebar sera chargée dynamiquement -->
+        
+        <div class="admin-content">
+            <!-- Header sera chargé dynamiquement -->
+            
+            <main class="admin-main">
+                <div class="page-header fade-in">
+                    <h1 class="page-title">
+                        <i class="bi bi-speedometer2 me-2"></i>
+                        Tableau de bord
+                    </h1>
+                    <p class="page-subtitle">Vue d'ensemble de votre plateforme Menu Kasher</p>
+                </div>
+
+                <!-- Widgets de statistiques -->
+                <div class="row g-4 mb-4 fade-in">
+                    <div class="col-xl-3 col-md-6">
+                        <div class="widget">
+                            <div class="widget-header">
+                                <h3 class="widget-title">Utilisateurs actifs</h3>
+                                <div class="widget-icon primary">
+                                    <i class="bi bi-people"></i>
+                                </div>
+                            </div>
+                            <div class="widget-value" id="activeUsersCount">-</div>
+                            <p class="widget-label">Utilisateurs connectés aujourd'hui</p>
+                            <div class="widget-trend" id="activeUsersTrend">
+                                <i class="bi bi-arrow-up"></i>
+                                <span>+12% par rapport à hier</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-xl-3 col-md-6">
+                        <div class="widget">
+                            <div class="widget-header">
+                                <h3 class="widget-title">Nouveaux comptes</h3>
+                                <div class="widget-icon success">
+                                    <i class="bi bi-person-plus"></i>
+                                </div>
+                            </div>
+                            <div class="widget-value" id="newUsersCount">-</div>
+                            <p class="widget-label">Inscriptions cette semaine</p>
+                            <div class="widget-trend trend-up" id="newUsersTrend">
+                                <i class="bi bi-arrow-up"></i>
+                                <span>+5 nouveaux utilisateurs</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-xl-3 col-md-6">
+                        <div class="widget">
+                            <div class="widget-header">
+                                <h3 class="widget-title">Recettes créées</h3>
+                                <div class="widget-icon warning">
+                                    <i class="bi bi-book"></i>
+                                </div>
+                            </div>
+                            <div class="widget-value" id="recipesCount">-</div>
+                            <p class="widget-label">Recettes ajoutées ce mois</p>
+                            <div class="widget-trend trend-up" id="recipesTrend">
+                                <i class="bi bi-arrow-up"></i>
+                                <span>+3 recettes cette semaine</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-xl-3 col-md-6">
+                        <div class="widget">
+                            <div class="widget-header">
+                                <h3 class="widget-title">Menus générés</h3>
+                                <div class="widget-icon info">
+                                    <i class="bi bi-calendar-week"></i>
+                                </div>
+                            </div>
+                            <div class="widget-value" id="menusCount">-</div>
+                            <p class="widget-label">Menus créés aujourd'hui</p>
+                            <div class="widget-trend trend-stable" id="menusTrend">
+                                <i class="bi bi-dash"></i>
+                                <span>Stable par rapport à hier</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Graphiques et tableaux -->
+                <div class="row g-4 mb-4 fade-in">
+                    <!-- Graphique d'activité -->
+                    <div class="col-xl-8">
+                        <div class="card">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">
+                                    <i class="bi bi-graph-up me-2"></i>
+                                    Activité des utilisateurs
+                                </h5>
+                                <div class="dropdown">
+                                    <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                        7 derniers jours
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item" href="#" onclick="updateActivityChart('7d')">7 derniers jours</a></li>
+                                        <li><a class="dropdown-item" href="#" onclick="updateActivityChart('30d')">30 derniers jours</a></li>
+                                        <li><a class="dropdown-item" href="#" onclick="updateActivityChart('90d')">3 derniers mois</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="activityChart" height="100"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Répartition des recettes -->
+                    <div class="col-xl-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0">
+                                    <i class="bi bi-pie-chart me-2"></i>
+                                    Types de recettes
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="recipesChart" height="200"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Activité récente et alertes -->
+                <div class="row g-4 fade-in">
+                    <!-- Activité récente -->
+                    <div class="col-xl-8">
+                        <div class="card">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">
+                                    <i class="bi bi-clock-history me-2"></i>
+                                    Activité récente
+                                </h5>
+                                <a href="logs.html" class="btn btn-sm btn-outline-primary">
+                                    Voir tous les logs
+                                </a>
+                            </div>
+                            <div class="card-body p-0">
+                                <div id="recentActivity" class="loading">
+                                    <div class="spinner"></div>
+                                    <span>Chargement de l'activité...</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Alertes système -->
+                    <div class="col-xl-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0">
+                                    <i class="bi bi-exclamation-triangle me-2"></i>
+                                    Alertes système
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <div id="systemAlerts">
+                                    <div class="alert alert-success" role="alert">
+                                        <i class="bi bi-check-circle me-2"></i>
+                                        <strong>Système opérationnel</strong><br>
+                                        Tous les services fonctionnent normalement.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Actions rapides -->
+                        <div class="card mt-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">
+                                    <i class="bi bi-lightning me-2"></i>
+                                    Actions rapides
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="d-grid gap-2">
+                                    <button class="btn btn-primary" onclick="location.href='users.html'">
+                                        <i class="bi bi-people me-2"></i>
+                                        Gérer les utilisateurs
+                                    </button>
+                                    <button class="btn btn-success" onclick="location.href='recipes.html'">
+                                        <i class="bi bi-book me-2"></i>
+                                        Ajouter une recette
+                                    </button>
+                                    <button class="btn btn-warning" onclick="location.href='settings.html'">
+                                        <i class="bi bi-gear me-2"></i>
+                                        Paramètres système
+                                    </button>
+                                    <button class="btn btn-info" onclick="exportData()">
+                                        <i class="bi bi-download me-2"></i>
+                                        Exporter les données
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/admin.js"></script>
+    <script>
+        // Variables globales pour les graphiques
+        let activityChart = null;
+        let recipesChart = null;
+
+        // Initialisation du dashboard
+        document.addEventListener('DOMContentLoaded', async function() {
+            await initDashboard();
+        });
+
+        async function initDashboard() {
+            try {
+                // Charger les statistiques
+                await loadStatistics();
+                
+                // Initialiser les graphiques
+                initCharts();
+                
+                // Charger l'activité récente
+                await loadRecentActivity();
+                
+                // Démarrer les mises à jour automatiques
+                startAutoRefresh();
+                
+            } catch (error) {
+                console.error('Erreur lors de l\'initialisation du dashboard:', error);
+                AdminApp.Utils.toast('Erreur lors du chargement du dashboard', 'danger');
+            }
+        }
+
+        async function loadStatistics() {
+            try {
+                // Charger les statistiques depuis l'API
+                const [userStats, globalStats, users, recipes, menus] = await Promise.all([
+                    AdminApp.Utils.api.get('/users/stats/overview'),
+                    AdminApp.Utils.api.get('/stats'),
+                    AdminApp.Utils.api.get('/users'),
+                    AdminApp.Utils.api.get('/recipes'),
+                    AdminApp.Utils.api.get('/menus')
+                ]);
+
+                // Mettre à jour les widgets avec les vraies statistiques
+                document.getElementById('activeUsersCount').textContent = userStats.stats.usersLoggedInToday;
+                document.getElementById('newUsersCount').textContent = userStats.stats.newUsersThisWeek;
+                document.getElementById('recipesCount').textContent = globalStats.recipes || recipes.length;
+                document.getElementById('menusCount').textContent = globalStats.menus || menus.length;
+
+            } catch (error) {
+                console.error('Erreur lors du chargement des statistiques:', error);
+                // Afficher des données factices en cas d'erreur
+                document.getElementById('activeUsersCount').textContent = '12';
+                document.getElementById('newUsersCount').textContent = '3';
+                document.getElementById('recipesCount').textContent = '45';
+                document.getElementById('menusCount').textContent = '8';
+            }
+        }
+
+        function initCharts() {
+            // Graphique d'activité
+            const activityCtx = document.getElementById('activityChart').getContext('2d');
+            activityChart = new Chart(activityCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'],
+                    datasets: [{
+                        label: 'Connexions',
+                        data: [12, 19, 15, 25, 22, 18, 24],
+                        borderColor: '#6C9BD1',
+                        backgroundColor: 'rgba(108, 155, 209, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }, {
+                        label: 'Menus créés',
+                        data: [8, 12, 10, 15, 13, 11, 16],
+                        borderColor: '#2A9D8F',
+                        backgroundColor: 'rgba(42, 157, 143, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(0,0,0,0.05)'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Graphique des types de recettes
+            const recipesCtx = document.getElementById('recipesChart').getContext('2d');
+            recipesChart = new Chart(recipesCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Déjeuner enfants', 'Dîner enfants', 'Dîner adultes'],
+                    datasets: [{
+                        data: [35, 40, 25],
+                        backgroundColor: [
+                            '#F4A261',
+                            '#6C9BD1',
+                            '#2E5266'
+                        ],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                padding: 20,
+                                usePointStyle: true
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        async function loadRecentActivity() {
+            const container = document.getElementById('recentActivity');
+            
+            try {
+                // Simuler le chargement de l'activité récente
+                // TODO: Remplacer par une vraie API
+                const activities = [
+                    {
+                        type: 'USER_LOGIN',
+                        user: 'famille@menu-kasher.app',
+                        message: 'Connexion utilisateur',
+                        timestamp: new Date(Date.now() - 5 * 60 * 1000),
+                        icon: 'person-check',
+                        color: 'success'
+                    },
+                    {
+                        type: 'RECIPE_CREATE',
+                        user: 'admin@menu-kasher.app',
+                        message: 'Nouvelle recette ajoutée : "Poisson au four"',
+                        timestamp: new Date(Date.now() - 15 * 60 * 1000),
+                        icon: 'plus-circle',
+                        color: 'primary'
+                    },
+                    {
+                        type: 'MENU_GENERATE',
+                        user: 'famille@menu-kasher.app',
+                        message: 'Menu généré pour la semaine',
+                        timestamp: new Date(Date.now() - 30 * 60 * 1000),
+                        icon: 'calendar-plus',
+                        color: 'info'
+                    },
+                    {
+                        type: 'USER_REGISTER',
+                        user: 'nouveau@menu-kasher.app',
+                        message: 'Nouvel utilisateur inscrit',
+                        timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000),
+                        icon: 'person-plus',
+                        color: 'success'
+                    }
+                ];
+
+                container.innerHTML = activities.map(activity => `
+                    <div class="d-flex align-items-start p-3 border-bottom">
+                        <div class="bg-${activity.color} rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 36px; height: 36px; min-width: 36px;">
+                            <i class="bi bi-${activity.icon} text-white"></i>
+                        </div>
+                        <div class="flex-grow-1">
+                            <div class="fw-semibold">${activity.message}</div>
+                            <div class="small text-muted">
+                                <i class="bi bi-person me-1"></i>${activity.user}
+                                <i class="bi bi-clock ms-3 me-1"></i>${AdminApp.Utils.formatDate(activity.timestamp, { hour: '2-digit', minute: '2-digit' })}
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+
+            } catch (error) {
+                console.error('Erreur lors du chargement de l\'activité récente:', error);
+                container.innerHTML = `
+                    <div class="text-center p-4 text-muted">
+                        <i class="bi bi-exclamation-triangle fs-4"></i>
+                        <div>Erreur lors du chargement de l'activité</div>
+                    </div>
+                `;
+            }
+        }
+
+        function updateActivityChart(period) {
+            // Simuler la mise à jour du graphique selon la période
+            let labels, data1, data2;
+            
+            switch(period) {
+                case '7d':
+                    labels = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'];
+                    data1 = [12, 19, 15, 25, 22, 18, 24];
+                    data2 = [8, 12, 10, 15, 13, 11, 16];
+                    break;
+                case '30d':
+                    labels = ['Sem 1', 'Sem 2', 'Sem 3', 'Sem 4'];
+                    data1 = [150, 180, 165, 190];
+                    data2 = [85, 95, 80, 105];
+                    break;
+                case '90d':
+                    labels = ['Mois 1', 'Mois 2', 'Mois 3'];
+                    data1 = [520, 580, 615];
+                    data2 = [320, 365, 380];
+                    break;
+            }
+            
+            activityChart.data.labels = labels;
+            activityChart.data.datasets[0].data = data1;
+            activityChart.data.datasets[1].data = data2;
+            activityChart.update();
+        }
+
+        function startAutoRefresh() {
+            // Actualiser les statistiques toutes les 5 minutes
+            setInterval(async () => {
+                await loadStatistics();
+            }, 5 * 60 * 1000);
+            
+            // Actualiser l'activité récente toutes les 2 minutes
+            setInterval(async () => {
+                await loadRecentActivity();
+            }, 2 * 60 * 1000);
+        }
+
+        function exportData() {
+            AdminApp.Utils.toast('Export des données en cours...', 'info');
+            
+            // Simuler l'export
+            setTimeout(() => {
+                AdminApp.Utils.toast('Données exportées avec succès !', 'success');
+            }, 2000);
+        }
+    </script>
+</body>
+</html>

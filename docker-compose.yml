@@ -1,0 +1,85 @@
+version: "3.8"
+
+services:
+  landing-page:
+    image: nginx:alpine
+    ports:
+      - "172.17.0.1:46455:80"
+    volumes:
+      - ./html:/usr/share/nginx/html
+    restart: always
+    environment:
+      - NGINX_HOST=localhost
+      - NGINX_PORT=80
+
+  postgres:
+    image: postgres:15-alpine
+    ports:
+      - "172.17.0.1:15432:5432"
+    volumes:
+      - ./menu-kasher-app/postgres-data:/var/lib/postgresql/data
+      - ./menu-kasher-app/init-db:/docker-entrypoint-initdb.d
+    restart: always
+    environment:
+      - POSTGRES_DB=menu_kasher
+      - POSTGRES_USER=menu_user
+      - POSTGRES_PASSWORD=menu_password
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U menu_user -d menu_kasher"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  menu-kasher-app:
+    image: node:18
+    ports:
+      - "172.17.0.1:13001:3001"
+    volumes:
+      - ./menu-kasher-app:/app
+    working_dir: /app
+    restart: always
+    command: sh -c "npm install && npx prisma generate && npx prisma migrate deploy && npm run start-full"
+    environment:
+      - NODE_ENV=production
+      - PORT=3001
+      - DATABASE_URL=postgresql://menu_user:menu_password@postgres:5432/menu_kasher?schema=public
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  mike-gabriel-lawyer:
+    image: node:18
+    ports:
+      - "172.17.0.1:13002:3002"
+    volumes:
+      - ./mike-gabriel-lawyer:/app
+    working_dir: /app
+    restart: always
+    command: sh -c "npm install && npm start"
+    environment:
+      - NODE_ENV=production
+      - PORT=3002
+
+  vibecoder:
+    image: elestio/vibecoder:${SOFTWARE_VERSION_TAG}
+    ports:
+      - "2108:2108"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /opt/app:/opt/app
+      - ./.env:/app/.env
+      - /opt/elestio:/opt/elestio
+      - ./CLAUDE.md:/opt/CLAUDE.md
+      - /usr/bin:/host/usr/bin:ro
+      - ./vibecoder/img:/app/img
+      - /root/.claude:/root/.claude
+      - /root/.acme.sh/vm.elestio.app/fullchain.cer:/var/lib/vibecoder/vibecoder.crt
+      - /root/.acme.sh/vm.elestio.app/vm.elestio.app.key:/var/lib/vibecoder/vibecoder.key
+    restart: always
+    environment:
+      - NODE_ENV=production
+      - PORT=2108
+      - HOME=/root
+      - CLAUDE_CONFIG_DIR=/root/.claude
+    extra_hosts:
+      - vibecoder-0ocus-u12869.vm.elestio.app:188.34.157.126

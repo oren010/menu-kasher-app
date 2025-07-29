@@ -1,0 +1,112 @@
+<!-- Sidebar Navigation -->
+<nav class="admin-sidebar" id="adminSidebar">
+    <div class="sidebar-header">
+        <i class="bi bi-shield-lock-fill fs-2 mb-2 text-warning"></i>
+        <h4>Administration</h4>
+        <p>Menu Kasher Familial</p>
+    </div>
+
+    <div class="sidebar-nav">
+        <!-- Section Tableau de bord -->
+        <div class="nav-section">
+            <div class="nav-section-title">Tableau de bord</div>
+            <a href="dashboard.html" class="nav-link" data-page="dashboard">
+                <i class="bi bi-speedometer2"></i>
+                <span class="nav-link-text">Vue d'ensemble</span>
+            </a>
+            <a href="analytics.html" class="nav-link" data-page="analytics">
+                <i class="bi bi-graph-up"></i>
+                <span class="nav-link-text">Statistiques</span>
+                <span class="nav-badge">Beta</span>
+            </a>
+        </div>
+
+        <!-- Section Gestion des utilisateurs -->
+        <div class="nav-section">
+            <div class="nav-section-title">Utilisateurs</div>
+            <a href="users.html" class="nav-link" data-page="users" data-permission="users.read">
+                <i class="bi bi-people"></i>
+                <span class="nav-link-text">Gestion utilisateurs</span>
+            </a>
+            <a href="user-preferences.html" class="nav-link" data-page="user-preferences" data-permission="users.read">
+                <i class="bi bi-sliders"></i>
+                <span class="nav-link-text">Préférences</span>
+            </a>
+            <a href="sessions.html" class="nav-link" data-page="sessions" data-permission="users.read">
+                <i class="bi bi-clock-history"></i>
+                <span class="nav-link-text">Sessions actives</span>
+            </a>
+        </div>
+
+        <!-- Section Contenu -->
+        <div class="nav-section">
+            <div class="nav-section-title">Contenu</div>
+            <a href="recipes.html" class="nav-link" data-page="recipes" data-permission="recipes.read">
+                <i class="bi bi-book"></i>
+                <span class="nav-link-text">Recettes</span>
+            </a>
+            <a href="ingredients.html" class="nav-link" data-page="ingredients" data-permission="ingredients.read">
+                <i class="bi bi-egg"></i>
+                <span class="nav-link-text">Ingrédients</span>
+            </a>
+            <a href="categories.html" class="nav-link" data-page="categories" data-permission="categories.read">
+                <i class="bi bi-tags"></i>
+                <span class="nav-link-text">Catégories</span>
+            </a>
+        </div>
+
+        <!-- Section Administration -->
+        <div class="nav-section">
+            <div class="nav-section-title">Administration</div>
+            <a href="admins.html" class="nav-link" data-page="admins" data-permission="admins.read">
+                <i class="bi bi-person-badge"></i>
+                <span class="nav-link-text">Administrateurs</span>
+            </a>
+            <a href="notifications.html" class="nav-link" data-page="notifications" data-permission="notifications.read">
+                <i class="bi bi-bell"></i>
+                <span class="nav-link-text">Notifications</span>
+            </a>
+            <a href="logs.html" class="nav-link" data-page="logs" data-permission="logs.view">
+                <i class="bi bi-journal-text"></i>
+                <span class="nav-link-text">Logs d'audit</span>
+            </a>
+            <a href="settings.html" class="nav-link" data-page="settings" data-permission="system.settings">
+                <i class="bi bi-gear"></i>
+                <span class="nav-link-text">Paramètres</span>
+            </a>
+        </div>
+
+        <!-- Section Système -->
+        <div class="nav-section">
+            <div class="nav-section-title">Système</div>
+            <a href="database.html" class="nav-link" data-page="database" data-permission="system.settings">
+                <i class="bi bi-server"></i>
+                <span class="nav-link-text">Base de données</span>
+            </a>
+            <a href="backup.html" class="nav-link" data-page="backup" data-permission="system.settings">
+                <i class="bi bi-cloud-download"></i>
+                <span class="nav-link-text">Sauvegardes</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Section utilisateur en bas -->
+    <div class="sidebar-footer" style="position: absolute; bottom: 0; width: 100%; padding: 1rem; border-top: 1px solid rgba(255,255,255,0.1);">
+        <div class="d-flex align-items-center mb-2">
+            <div class="bg-warning rounded-circle d-flex align-items-center justify-content-center me-2" style="width: 32px; height: 32px;">
+                <i class="bi bi-person-fill text-dark"></i>
+            </div>
+            <div class="flex-grow-1">
+                <div class="fw-semibold" style="font-size: 0.875rem;" id="sidebarAdminName">Admin</div>
+                <div style="font-size: 0.75rem; opacity: 0.7;" id="sidebarAdminRole">Super Admin</div>
+            </div>
+        </div>
+        <button class="btn btn-outline-light btn-sm w-100" onclick="logout()">
+            <i class="bi bi-box-arrow-right me-1"></i>
+            Déconnexion
+        </button>
+    </div>
+</nav>
+
+<!-- Overlay pour mobile -->
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>

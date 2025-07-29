@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profil Utilisateur - Administration Menu Kasher</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="assets/admin.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="admin-layout">
+        <!-- Sidebar sera chargée dynamiquement -->
+        
+        <div class="admin-content">
+            <!-- Header sera chargé dynamiquement -->
+            
+            <main class="admin-main">
+                <!-- Loading State -->
+                <div id="loadingState" class="text-center py-5">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Chargement...</span>
+                    </div>
+                    <p class="mt-3 text-muted">Chargement du profil utilisateur...</p>
+                </div>
+
+                <!-- Content -->
+                <div id="userContent" style="display: none;">
+                    <!-- Header utilisateur -->
+                    <div class="page-header fade-in">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div class="d-flex align-items-center">
+                                <a href="users.html" class="btn btn-outline-secondary me-3">
+                                    <i class="bi bi-arrow-left me-2"></i>
+                                    Retour
+                                </a>
+                                <div class="bg-primary rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 64px; height: 64px;">
+                                    <i class="bi bi-person-fill text-white fs-2"></i>
+                                </div>
+                                <div>
+                                    <h1 class="page-title mb-1" id="userName">-</h1>
+                                    <p class="page-subtitle mb-2" id="userEmail">-</p>
+                                    <div>
+                                        <span class="badge" id="userStatusBadge">-</span>
+                                        <span class="badge bg-info ms-1" id="userVerifiedBadge">-</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="dropdown">
+                                <button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                    <i class="bi bi-gear me-2"></i>
+                                    Actions
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><button class="dropdown-item" onclick="editUser()">
+                                        <i class="bi bi-pencil me-2"></i>
+                                        Modifier l'utilisateur
+                                    </button></li>
+                                    <li><button class="dropdown-item" onclick="resetPassword()">
+                                        <i class="bi bi-key me-2"></i>
+                                        Réinitialiser le mot de passe
+                                    </button></li>
+                                    <li><button class="dropdown-item" onclick="toggleUserStatus()">
+                                        <i class="bi bi-pause me-2"></i>
+                                        <span id="toggleStatusText">Désactiver</span>
+                                    </button></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><button class="dropdown-item" onclick="unlockUser()">
+                                        <i class="bi bi-unlock me-2"></i>
+                                        Déverrouiller le compte
+                                    </button></li>
+                                    <li><button class="dropdown-item text-danger" onclick="deleteUser()">
+                                        <i class="bi bi-trash me-2"></i>
+                                        Supprimer l'utilisateur
+                                    </button></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Statistiques rapides -->
+                    <div class="row g-4 mb-4 fade-in">
+                        <div class="col-md-3">
+                            <div class="widget">
+                                <div class="widget-header">
+                                    <h3 class="widget-title">Menus créés</h3>
+                                    <div class="widget-icon primary">
+                                        <i class="bi bi-calendar-week"></i>
+                                    </div>
+                                </div>
+                                <div class="widget-value" id="userMenusCount">-</div>
+                                <p class="widget-label">Menus générés</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="widget">
+                                <div class="widget-header">
+                                    <h3 class="widget-title">Dernière connexion</h3>
+                                    <div class="widget-icon success">
+                                        <i class="bi bi-clock"></i>
+                                    </div>
+                                </div>
+                                <div class="widget-value small" id="userLastLogin">-</div>
+                                <p class="widget-label">Activité récente</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="widget">
+                                <div class="widget-header">
+                                    <h3 class="widget-title">Tentatives connexion</h3>
+                                    <div class="widget-icon warning">
+                                        <i class="bi bi-shield-exclamation"></i>
+                                    </div>
+                                </div>
+                                <div class="widget-value" id="userLoginAttempts">-</div>
+                                <p class="widget-label">Échecs récents</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="widget">
+                                <div class="widget-header">
+                                    <h3 class="widget-title">Compte créé</h3>
+                                    <div class="widget-icon info">
+                                        <i class="bi bi-person-plus"></i>
+                                    </div>
+                                </div>
+                                <div class="widget-value small" id="userCreatedAt">-</div>
+                                <p class="widget-label">Date d'inscription</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Contenu principal -->
+                    <div class="row g-4">
+                        <!-- Informations personnelles -->
+                        <div class="col-xl-4">
+                            <div class="card fade-in">
+                                <div class="card-header">
+                                    <h5 class="mb-0">
+                                        <i class="bi bi-person me-2"></i>
+                                        Informations personnelles
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row g-3">
+                                        <div class="col-6">
+                                            <label class="form-label small text-muted">Adultes</label>
+                                            <div class="fw-semibold" id="userAdultsCount">-</div>
+                                        </div>
+                                        <div class="col-6">
+                                            <label class="form-label small text-muted">Enfants</label>
+                                            <div class="fw-semibold" id="userChildrenCount">-</div>
+                                        </div>
+                                        <div class="col-12">
+                                            <label class="form-label small text-muted">Niveau de kasher</label>
+                                            <div class="fw-semibold" id="userKosherLevel">-</div>
+                                        </div>
+                                        <div class="col-12">
+                                            <label class="form-label small text-muted">Niveau de compétence</label>
+                                            <div class="fw-semibold" id="userCookingSkill">-</div>
+                                        </div>
+                                        <div class="col-12">
+                                            <label class="form-label small text-muted">Difficulté préférée</label>
+                                            <div class="fw-semibold" id="userPreferredDifficulty">-</div>
+                                        </div>
+                                        <div class="col-12">
+                                            <label class="form-label small text-muted">Niveau de budget</label>
+                                            <div class="fw-semibold" id="userBudgetLevel">-</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Préférences alimentaires -->
+                            <div class="card mt-4 fade-in">
+                                <div class="card-header">
+                                    <h5 class="mb-0">
+                                        <i class="bi bi-heart me-2"></i>
+                                        Préférences alimentaires
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        <label class="form-label small text-muted">Allergènes</label>
+                                        <div id="userAllergens">-</div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label small text-muted">Restrictions alimentaires</label>
+                                        <div id="userDietaryRestrictions">-</div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label small text-muted">Ingrédients exclus</label>
+                                        <div id="userExcludedIngredients">-</div>
+                                    </div>
+                                    <div class="row g-2">
+                                        <div class="col-6">
+                                            <label class="form-label small text-muted">Déjeuner</label>
+                                            <div id="userIncludeLunch">-</div>
+                                        </div>
+                                        <div class="col-6">
+                                            <label class="form-label small text-muted">Dîner</label>
+                                            <div id="userIncludeDinner">-</div>
+                                        </div>
+                                        <div class="col-6">
+                                            <label class="form-label small text-muted">Repas adultes</label>
+                                            <div id="userIncludeAdultMeals">-</div>
+                                        </div>
+                                        <div class="col-6">
+                                            <label class="form-label small text-muted">Repas enfants</label>
+                                            <div id="userIncludeChildMeals">-</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Menus et activité -->
+                        <div class="col-xl-8">
+                            <!-- Menus récents -->
+                            <div class="card fade-in">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <h5 class="mb-0">
+                                        <i class="bi bi-calendar-week me-2"></i>
+                                        Menus récents
+                                    </h5>
+                                    <button class="btn btn-sm btn-outline-primary" onclick="viewAllMenus()">
+                                        Voir tous les menus
+                                    </button>
+                                </div>
+                                <div class="card-body">
+                                    <div id="userMenusList" class="loading">
+                                        <div class="spinner-border spinner-border-sm me-2"></div>
+                                        Chargement des menus...
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Activité récente -->
+                            <div class="card mt-4 fade-in">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <h5 class="mb-0">
+                                        <i class="bi bi-clock-history me-2"></i>
+                                        Activité récente
+                                    </h5>
+                                    <button class="btn btn-sm btn-outline-primary" onclick="viewAllActivity()">
+                                        Voir toute l'activité
+                                    </button>
+                                </div>
+                                <div class="card-body">
+                                    <div id="userActivityList" class="loading">
+                                        <div class="spinner-border spinner-border-sm me-2"></div>
+                                        Chargement de l'activité...
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Error State -->
+                <div id="errorState" style="display: none;">
+                    <div class="text-center py-5">
+                        <i class="bi bi-exclamation-triangle text-danger fs-1"></i>
+                        <h3 class="mt-3">Erreur de chargement</h3>
+                        <p class="text-muted">Impossible de charger les informations de l'utilisateur.</p>
+                        <button class="btn btn-primary" onclick="loadUserData()">
+                            <i class="bi bi-arrow-clockwise me-2"></i>
+                            Réessayer
+                        </button>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Modal Edit User -->
+    <div class="modal fade" id="editUserModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="bi bi-pencil me-2"></i>
+                        Modifier l'utilisateur
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editUserForm">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Nom</label>
+                                <input type="text" class="form-control" id="editUserName" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Email</label>
+                                <input type="email" class="form-control" id="editUserEmail" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Adultes</label>
+                                <input type="number" class="form-control" id="editUserAdults" min="1" max="10">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Enfants</label>
+                                <input type="number" class="form-control" id="editUserChildren" min="0" max="10">
+                            </div>
+                            <div class="col-12">
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="editUserActive">
+                                    <label class="form-check-label" for="editUserActive">
+                                        Compte actif
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="editUserVerified">
+                                    <label class="form-check-label" for="editUserVerified">
+                                        Email vérifié
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        Annuler
+                    </button>
+                    <button type="button" class="btn btn-primary" onclick="saveUserChanges()">
+                        <i class="bi bi-check-lg me-2"></i>
+                        Sauvegarder
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/admin.js"></script>
+    <script>
+        let currentUserId = null;
+        let currentUser = null;
+
+        // Initialisation
+        document.addEventListener('DOMContentLoaded', async function() {
+            await initUserDetail();
+        });
+
+        async function initUserDetail() {
+            try {
+                // Récupérer l'ID utilisateur depuis l'URL
+                const urlParams = new URLSearchParams(window.location.search);
+                currentUserId = urlParams.get('id');
+                
+                if (!currentUserId) {
+                    showError('ID utilisateur manquant');
+                    return;
+                }
+
+                await loadUserData();
+                
+            } catch (error) {
+                console.error('Erreur lors de l\'initialisation:', error);
+                showError('Erreur lors du chargement');
+            }
+        }
+
+        async function loadUserData() {
+            try {
+                showLoading();
+                
+                // Charger les données utilisateur
+                const [userResponse, activityResponse] = await Promise.all([
+                    AdminApp.Utils.api.get(`/users/${currentUserId}`),
+                    AdminApp.Utils.api.get(`/users/${currentUserId}/activity?limit=10`)
+                ]);
+                
+                if (userResponse.success) {
+                    currentUser = userResponse.user;
+                    populateUserData(currentUser);
+                    
+                    if (activityResponse.success) {
+                        populateActivity(activityResponse.activities);
+                    }
+                    
+                    showContent();
+                } else {
+                    throw new Error(userResponse.message || 'Utilisateur non trouvé');
+                }
+                
+            } catch (error) {
+                console.error('Erreur lors du chargement:', error);
+                showError('Impossible de charger les données utilisateur');
+            }
+        }
+
+        function populateUserData(user) {
+            // Header
+            document.getElementById('userName').textContent = user.name || '-';
+            document.getElementById('userEmail').textContent = user.email || '-';
+            
+            // Status badges
+            const statusBadge = document.getElementById('userStatusBadge');
+            statusBadge.textContent = user.isActive ? 'Actif' : 'Inactif';
+            statusBadge.className = `badge bg-${user.isActive ? 'success' : 'secondary'}`;
+            
+            const verifiedBadge = document.getElementById('userVerifiedBadge');
+            verifiedBadge.textContent = user.emailVerified ? 'Email vérifié' : 'Email non vérifié';
+            verifiedBadge.className = `badge bg-${user.emailVerified ? 'info' : 'warning'} ms-1`;
+
+            // Widgets
+            document.getElementById('userMenusCount').textContent = user._count?.menus || user.menus?.length || 0;
+            document.getElementById('userLastLogin').textContent = user.lastLogin ? 
+                AdminApp.Utils.formatDate(user.lastLogin, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : 'Jamais';
+            document.getElementById('userLoginAttempts').textContent = user.loginAttempts || 0;
+            document.getElementById('userCreatedAt').textContent = AdminApp.Utils.formatDate(user.createdAt, { year: 'numeric', month: 'short', day: 'numeric' });
+
+            // Informations personnelles
+            document.getElementById('userAdultsCount').textContent = user.adultsCount || '-';
+            document.getElementById('userChildrenCount').textContent = user.childrenCount || '-';
+            document.getElementById('userKosherLevel').textContent = user.kosherLevel || '-';
+            document.getElementById('userCookingSkill').textContent = user.cookingSkillLevel || '-';
+            document.getElementById('userPreferredDifficulty').textContent = user.preferredDifficulty || '-';
+            document.getElementById('userBudgetLevel').textContent = user.budgetLevel || '-';
+
+            // Préférences alimentaires
+            document.getElementById('userAllergens').innerHTML = formatTags(user.allergens) || '<span class="text-muted">Aucun</span>';
+            document.getElementById('userDietaryRestrictions').innerHTML = formatTags(user.dietaryRestrictions) || '<span class="text-muted">Aucune</span>';
+            document.getElementById('userExcludedIngredients').innerHTML = formatTags(user.excludedIngredients) || '<span class="text-muted">Aucun</span>';
+            
+            document.getElementById('userIncludeLunch').innerHTML = formatBoolean(user.includeLunch);
+            document.getElementById('userIncludeDinner').innerHTML = formatBoolean(user.includeDinner);
+            document.getElementById('userIncludeAdultMeals').innerHTML = formatBoolean(user.includeAdultMeals);
+            document.getElementById('userIncludeChildMeals').innerHTML = formatBoolean(user.includeChildMeals);
+
+            // Menus
+            populateMenus(user.menus || []);
+
+            // Action buttons
+            const toggleText = document.getElementById('toggleStatusText');
+            if (toggleText) {
+                toggleText.textContent = user.isActive ? 'Désactiver' : 'Activer';
+            }
+        }
+
+        function populateMenus(menus) {
+            const container = document.getElementById('userMenusList');
+            
+            if (menus.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-4 text-muted">
+                        <i class="bi bi-calendar-x fs-1"></i>
+                        <div class="mt-2">Aucun menu créé</div>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = menus.map(menu => `
+                <div class="d-flex align-items-center p-3 border-bottom">
+                    <div class="bg-primary rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">
+                        <i class="bi bi-calendar-week text-white"></i>
+                    </div>
+                    <div class="flex-grow-1">
+                        <div class="fw-semibold">${menu.name || 'Menu sans nom'}</div>
+                        <div class="small text-muted">
+                            <i class="bi bi-calendar me-1"></i>
+                            ${AdminApp.Utils.formatDate(menu.startDate)} - ${AdminApp.Utils.formatDate(menu.endDate)}
+                            <i class="bi bi-dot"></i>
+                            <span class="badge badge-sm bg-${menu.isActive ? 'success' : 'secondary'}">${menu.isActive ? 'Actif' : 'Inactif'}</span>
+                        </div>
+                    </div>
+                    <div class="text-muted small">
+                        ${AdminApp.Utils.formatDate(menu.createdAt, { month: 'short', day: 'numeric' })}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function populateActivity(activities) {
+            const container = document.getElementById('userActivityList');
+            
+            if (activities.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-4 text-muted">
+                        <i class="bi bi-clock-history fs-1"></i>
+                        <div class="mt-2">Aucune activité récente</div>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = activities.map(activity => `
+                <div class="d-flex align-items-start p-3 border-bottom">
+                    <div class="bg-${getActivityColor(activity.action)} rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 36px; height: 36px;">
+                        <i class="bi bi-${getActivityIcon(activity.action)} text-white"></i>
+                    </div>
+                    <div class="flex-grow-1">
+                        <div class="fw-semibold">${getActivityMessage(activity.action)}</div>
+                        <div class="small text-muted">
+                            <i class="bi bi-clock me-1"></i>
+                            ${AdminApp.Utils.formatDate(activity.createdAt, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
+                            ${activity.ipAddress ? `<i class="bi bi-geo-alt ms-2 me-1"></i>${activity.ipAddress}` : ''}
+                        </div>
+                    </div>
+                    <div>
+                        <span class="badge bg-${activity.success ? 'success' : 'danger'}">
+                            ${activity.success ? 'Succès' : 'Échec'}
+                        </span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Utilitaires
+        function formatTags(tags) {
+            if (!tags || tags.length === 0) return null;
+            return tags.map(tag => `<span class="badge bg-secondary me-1">${tag}</span>`).join('');
+        }
+
+        function formatBoolean(value) {
+            return value ? 
+                '<span class="badge bg-success">Oui</span>' : 
+                '<span class="badge bg-secondary">Non</span>';
+        }
+
+        function getActivityColor(action) {
+            const colors = {
+                'USER_LOGIN': 'success',
+                'USER_UPDATE_PROFILE': 'primary',
+                'USER_CHANGE_PASSWORD': 'warning',
+                'MENU_CREATE': 'info',
+                'MENU_UPDATE': 'info',
+                'MENU_DELETE': 'danger'
+            };
+            return colors[action] || 'secondary';
+        }
+
+        function getActivityIcon(action) {
+            const icons = {
+                'USER_LOGIN': 'box-arrow-in-right',
+                'USER_UPDATE_PROFILE': 'person-gear',
+                'USER_CHANGE_PASSWORD': 'key',
+                'MENU_CREATE': 'calendar-plus',
+                'MENU_UPDATE': 'calendar-check',
+                'MENU_DELETE': 'calendar-x'
+            };
+            return icons[action] || 'activity';
+        }
+
+        function getActivityMessage(action) {
+            const messages = {
+                'USER_LOGIN': 'Connexion utilisateur',
+                'USER_UPDATE_PROFILE': 'Mise à jour du profil',
+                'USER_CHANGE_PASSWORD': 'Changement de mot de passe',
+                'MENU_CREATE': 'Création d\'un menu',
+                'MENU_UPDATE': 'Modification d\'un menu',
+                'MENU_DELETE': 'Suppression d\'un menu'
+            };
+            return messages[action] || 'Action utilisateur';
+        }
+
+        // Actions
+        async function editUser() {
+            if (!currentUser) return;
+            
+            // Remplir le formulaire
+            document.getElementById('editUserName').value = currentUser.name || '';
+            document.getElementById('editUserEmail').value = currentUser.email || '';
+            document.getElementById('editUserAdults').value = currentUser.adultsCount || 2;
+            document.getElementById('editUserChildren').value = currentUser.childrenCount || 0;
+            document.getElementById('editUserActive').checked = currentUser.isActive || false;
+            document.getElementById('editUserVerified').checked = currentUser.emailVerified || false;
+            
+            // Afficher le modal
+            new bootstrap.Modal(document.getElementById('editUserModal')).show();
+        }
+
+        async function saveUserChanges() {
+            try {
+                const formData = {
+                    name: document.getElementById('editUserName').value,
+                    email: document.getElementById('editUserEmail').value,
+                    adultsCount: parseInt(document.getElementById('editUserAdults').value),
+                    childrenCount: parseInt(document.getElementById('editUserChildren').value),
+                    isActive: document.getElementById('editUserActive').checked,
+                    emailVerified: document.getElementById('editUserVerified').checked
+                };
+
+                const response = await AdminApp.Utils.api.put(`/users/${currentUserId}`, formData);
+                
+                if (response.success) {
+                    AdminApp.Utils.toast('Utilisateur mis à jour avec succès!', 'success');
+                    bootstrap.Modal.getInstance(document.getElementById('editUserModal')).hide();
+                    await loadUserData(); // Recharger les données
+                } else {
+                    throw new Error(response.message);
+                }
+                
+            } catch (error) {
+                console.error('Erreur lors de la sauvegarde:', error);
+                AdminApp.Utils.toast('Erreur lors de la mise à jour: ' + error.message, 'danger');
+            }
+        }
+
+        async function resetPassword() {
+            if (!confirm('Êtes-vous sûr de vouloir réinitialiser le mot de passe de cet utilisateur ?')) {
+                return;
+            }
+            
+            try {
+                const response = await AdminApp.Utils.api.put(`/users/${currentUserId}`, { resetPassword: true });
+                
+                if (response.success) {
+                    AdminApp.Utils.toast('Mot de passe réinitialisé avec succès!', 'success');
+                    if (response.tempPassword) {
+                        AdminApp.Utils.toast('Consultez les logs serveur pour le mot de passe temporaire', 'info');
+                    }
+                } else {
+                    throw new Error(response.message);
+                }
+                
+            } catch (error) {
+                console.error('Erreur lors de la réinitialisation:', error);
+                AdminApp.Utils.toast('Erreur lors de la réinitialisation: ' + error.message, 'danger');
+            }
+        }
+
+        async function toggleUserStatus() {
+            const action = currentUser.isActive ? 'désactiver' : 'activer';
+            if (!confirm(`Êtes-vous sûr de vouloir ${action} cet utilisateur ?`)) {
+                return;
+            }
+            
+            try {
+                const response = await AdminApp.Utils.api.put(`/users/${currentUserId}`, { 
+                    isActive: !currentUser.isActive 
+                });
+                
+                if (response.success) {
+                    AdminApp.Utils.toast(`Utilisateur ${action} avec succès!`, 'success');
+                    await loadUserData(); // Recharger les données
+                } else {
+                    throw new Error(response.message);
+                }
+                
+            } catch (error) {
+                console.error('Erreur lors du changement de statut:', error);
+                AdminApp.Utils.toast('Erreur lors du changement de statut: ' + error.message, 'danger');
+            }
+        }
+
+        async function unlockUser() {
+            try {
+                const response = await AdminApp.Utils.api.post(`/users/${currentUserId}/unlock`);
+                
+                if (response.success) {
+                    AdminApp.Utils.toast('Compte déverrouillé avec succès!', 'success');
+                    await loadUserData(); // Recharger les données
+                } else {
+                    throw new Error(response.message);
+                }
+                
+            } catch (error) {
+                console.error('Erreur lors du déverrouillage:', error);
+                AdminApp.Utils.toast('Erreur lors du déverrouillage: ' + error.message, 'danger');
+            }
+        }
+
+        async function deleteUser() {
+            if (!confirm('⚠️ ATTENTION: Cette action est irréversible!\n\nÊtes-vous sûr de vouloir supprimer définitivement cet utilisateur et toutes ses données ?')) {
+                return;
+            }
+            
+            try {
+                const response = await AdminApp.Utils.api.delete(`/users/${currentUserId}`);
+                
+                if (response.success) {
+                    AdminApp.Utils.toast('Utilisateur supprimé avec succès!', 'success');
+                    // Rediriger vers la liste des utilisateurs
+                    setTimeout(() => {
+                        window.location.href = 'users.html';
+                    }, 2000);
+                } else {
+                    throw new Error(response.message);
+                }
+                
+            } catch (error) {
+                console.error('Erreur lors de la suppression:', error);
+                AdminApp.Utils.toast('Erreur lors de la suppression: ' + error.message, 'danger');
+            }
+        }
+
+        function viewAllMenus() {
+            // TODO: Implémenter la navigation vers la page des menus filtrée par utilisateur
+            AdminApp.Utils.toast('Fonctionnalité à venir: Vue complète des menus', 'info');
+        }
+
+        function viewAllActivity() {
+            window.location.href = `user-activity.html?id=${currentUserId}`;
+        }
+
+        // États d'affichage
+        function showLoading() {
+            document.getElementById('loadingState').style.display = 'block';
+            document.getElementById('userContent').style.display = 'none';
+            document.getElementById('errorState').style.display = 'none';
+        }
+
+        function showContent() {
+            document.getElementById('loadingState').style.display = 'none';
+            document.getElementById('userContent').style.display = 'block';
+            document.getElementById('errorState').style.display = 'none';
+        }
+
+        function showError(message) {
+            document.getElementById('loadingState').style.display = 'none';
+            document.getElementById('userContent').style.display = 'none';
+            document.getElementById('errorState').style.display = 'block';
+            
+            const errorElement = document.querySelector('#errorState p');
+            if (errorElement && message) {
+                errorElement.textContent = message;
+            }
+        }
+    </script>
+</body>
+</html>

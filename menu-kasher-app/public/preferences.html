@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Préférences - Menu Planificateur</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2E5266;
+            --secondary-color: #6C9BD1;
+            --accent-color: #F4A261;
+            --success-color: #2A9D8F;
+            --background-color: #F8F9FA;
+            --text-color: #212529;
+            --border-radius: 12px;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--background-color) 0%, #E9ECEF 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-color);
+            min-height: 100vh;
+        }
+
+        .preferences-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        .preference-card {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+            overflow: hidden;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .preference-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            padding: 1.5rem 2rem;
+            border: none;
+        }
+
+        .card-header h4 {
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .card-header p {
+            margin: 0;
+            opacity: 0.9;
+            font-size: 0.95rem;
+        }
+
+        .card-body {
+            padding: 2rem;
+        }
+
+        .form-section {
+            margin-bottom: 2rem;
+        }
+
+        .form-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .section-title {
+            color: var(--primary-color);
+            font-weight: 600;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .dietary-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .dietary-tag {
+            padding: 0.5rem 1rem;
+            border: 2px solid #dee2e6;
+            border-radius: 25px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 0.9rem;
+            user-select: none;
+        }
+
+        .dietary-tag:hover {
+            border-color: var(--secondary-color);
+            background: #f8f9fa;
+        }
+
+        .dietary-tag.active {
+            background: var(--accent-color);
+            border-color: var(--accent-color);
+            color: white;
+        }
+
+        .dietary-tag.kosher.active {
+            background: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        .dietary-tag.vegan.active {
+            background: #28a745;
+            border-color: #28a745;
+        }
+
+        .dietary-tag.vegetarian.active {
+            background: #17a2b8;
+            border-color: #17a2b8;
+        }
+
+        .range-container {
+            position: relative;
+            margin: 1rem 0;
+        }
+
+        .range-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .range-value {
+            background: var(--accent-color);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .form-range {
+            accent-color: var(--accent-color);
+        }
+
+        .skill-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .skill-option {
+            padding: 1rem;
+            border: 2px solid #dee2e6;
+            border-radius: var(--border-radius);
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: white;
+        }
+
+        .skill-option:hover {
+            border-color: var(--secondary-color);
+            background: #f8f9fa;
+        }
+
+        .skill-option.active {
+            border-color: var(--success-color);
+            background: var(--success-color);
+            color: white;
+        }
+
+        .skill-option i {
+            font-size: 1.5rem;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .weight-goals {
+            background: #f8f9fa;
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .weight-input-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .calorie-display {
+            background: var(--accent-color);
+            color: white;
+            padding: 1rem;
+            border-radius: var(--border-radius);
+            text-align: center;
+            margin-top: 1rem;
+        }
+
+        .save-button {
+            background: linear-gradient(135deg, var(--success-color) 0%, #23896B 100%);
+            border: none;
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: var(--border-radius);
+            font-weight: 600;
+            font-size: 1.1rem;
+            width: 100%;
+            transition: all 0.2s ease;
+        }
+
+        .save-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(42, 157, 143, 0.3);
+        }
+
+        .back-button {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+            margin-bottom: 2rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: color 0.2s ease;
+        }
+
+        .back-button:hover {
+            color: var(--accent-color);
+        }
+
+        .alert {
+            border-radius: var(--border-radius);
+            border: none;
+        }
+
+        .form-check-input:checked {
+            background-color: var(--success-color);
+            border-color: var(--success-color);
+        }
+
+        @media (max-width: 768px) {
+            .preferences-container {
+                padding: 1rem 0.5rem;
+            }
+            
+            .card-body {
+                padding: 1.5rem;
+            }
+            
+            .weight-input-group {
+                grid-template-columns: 1fr;
+            }
+
+            .skill-selector {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="preferences-container">
+        <a href="/" class="back-button">
+            <i class="bi bi-arrow-left"></i>
+            Retour au menu principal
+        </a>
+
+        <div class="text-center mb-4">
+            <h1 class="display-6 fw-bold" style="color: var(--primary-color);">
+                <i class="bi bi-gear-fill me-2"></i>
+                Configuration des Préférences
+            </h1>
+            <p class="lead text-muted">Personnalisez votre expérience de planification de repas</p>
+        </div>
+
+        <!-- Alerte de statut -->
+        <div id="alert-container"></div>
+
+        <form id="preferences-form">
+            <!-- Section Informations Familiales -->
+            <div class="preference-card">
+                <div class="card-header">
+                    <h4><i class="bi bi-people-fill me-2"></i>Composition Familiale</h4>
+                    <p>Définissez le nombre de personnes pour adapter les portions</p>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="range-container">
+                                <div class="range-label">
+                                    <label class="form-label">Nombre d'adultes</label>
+                                    <span class="range-value" id="adults-value">2</span>
+                                </div>
+                                <input type="range" class="form-range" id="adultsCount" min="1" max="8" value="2">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="range-container">
+                                <div class="range-label">
+                                    <label class="form-label">Nombre d'enfants</label>
+                                    <span class="range-value" id="children-value">2</span>
+                                </div>
+                                <input type="range" class="form-range" id="childrenCount" min="0" max="6" value="2">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section Régimes Alimentaires -->
+            <div class="preference-card">
+                <div class="card-header">
+                    <h4><i class="bi bi-heart-pulse-fill me-2"></i>Régimes Alimentaires</h4>
+                    <p>Sélectionnez vos restrictions et préférences alimentaires</p>
+                </div>
+                <div class="card-body">
+                    <div class="form-section">
+                        <div class="section-title">
+                            <i class="bi bi-shield-check"></i>
+                            Restrictions alimentaires
+                        </div>
+                        <div class="dietary-tags">
+                            <div class="dietary-tag kosher" data-tag="kosher">
+                                <i class="bi bi-star-fill me-1"></i>Kasher
+                            </div>
+                            <div class="dietary-tag halal" data-tag="halal">
+                                <i class="bi bi-moon-fill me-1"></i>Halal
+                            </div>
+                            <div class="dietary-tag vegan" data-tag="vegan">
+                                <i class="bi bi-leaf-fill me-1"></i>Végétalien
+                            </div>
+                            <div class="dietary-tag vegetarian" data-tag="vegetarian">
+                                <i class="bi bi-flower1 me-1"></i>Végétarien
+                            </div>
+                            <div class="dietary-tag" data-tag="pescatarian">
+                                <i class="bi bi-tsunami me-1"></i>Pescétarien
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <div class="section-title">
+                            <i class="bi bi-exclamation-triangle"></i>
+                            Allergènes à éviter
+                        </div>
+                        <div class="dietary-tags" id="allergens-tags">
+                            <div class="dietary-tag" data-allergen="nuts">Fruits à coque</div>
+                            <div class="dietary-tag" data-allergen="dairy">Produits laitiers</div>
+                            <div class="dietary-tag" data-allergen="gluten">Gluten</div>
+                            <div class="dietary-tag" data-allergen="eggs">Œufs</div>
+                            <div class="dietary-tag" data-allergen="soy">Soja</div>
+                            <div class="dietary-tag" data-allergen="shellfish">Fruits de mer</div>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <div class="section-title">
+                            <i class="bi bi-x-circle"></i>
+                            Ingrédients à exclure
+                        </div>
+                        <input type="text" class="form-control" id="excludedIngredients" 
+                               placeholder="Ex: tofu, champignons, épinards..." 
+                               data-bs-toggle="tooltip" 
+                               title="Séparez les ingrédients par des virgules">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section Niveau de Cuisine -->
+            <div class="preference-card">
+                <div class="card-header">
+                    <h4><i class="bi bi-chef-hat-fill me-2"></i>Niveau de Cuisine</h4>
+                    <p>Adaptez la complexité des recettes à vos compétences</p>
+                </div>
+                <div class="card-body">
+                    <div class="form-section">
+                        <div class="section-title">
+                            <i class="bi bi-person-badge"></i>
+                            Votre niveau de cuisine
+                        </div>
+                        <div class="skill-selector">
+                            <div class="skill-option" data-skill="beginner">
+                                <i class="bi bi-1-circle-fill"></i>
+                                <strong>Débutant</strong>
+                                <div class="mt-1 small text-muted">Recettes simples et rapides</div>
+                            </div>
+                            <div class="skill-option active" data-skill="intermediate">
+                                <i class="bi bi-2-circle-fill"></i>
+                                <strong>Intermédiaire</strong>
+                                <div class="mt-1 small text-muted">Quelques techniques culinaires</div>
+                            </div>
+                            <div class="skill-option" data-skill="advanced">
+                                <i class="bi bi-3-circle-fill"></i>
+                                <strong>Confirmé</strong>
+                                <div class="mt-1 small text-muted">Recettes élaborées</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <div class="section-title">
+                            <i class="bi bi-graph-up"></i>
+                            Difficulté préférée des recettes
+                        </div>
+                        <div class="skill-selector">
+                            <div class="skill-option" data-difficulty="easy">
+                                <i class="bi bi-speedometer"></i>
+                                <strong>Facile</strong>
+                                <div class="mt-1 small text-muted">15-30 min</div>
+                            </div>
+                            <div class="skill-option active" data-difficulty="medium">
+                                <i class="bi bi-speedometer2"></i>
+                                <strong>Moyen</strong>
+                                <div class="mt-1 small text-muted">30-60 min</div>
+                            </div>
+                            <div class="skill-option" data-difficulty="hard">
+                                <i class="bi bi-fire"></i>
+                                <strong>Difficile</strong>
+                                <div class="mt-1 small text-muted">60+ min</div>
+                            </div>
+                            <div class="skill-option" data-difficulty="mixed">
+                                <i class="bi bi-shuffle"></i>
+                                <strong>Varié</strong>
+                                <div class="mt-1 small text-muted">Mélange</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <div class="range-container">
+                            <div class="range-label">
+                                <label class="form-label">
+                                    <i class="bi bi-award me-1"></i>
+                                    Repas raffinés par semaine
+                                </label>
+                                <span class="range-value" id="refined-value">2</span>
+                            </div>
+                            <input type="range" class="form-range" id="weeklyRefinedMeals" min="0" max="7" value="2">
+                            <small class="text-muted">Combien de repas plus élaborés souhaitez-vous par semaine ?</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section Objectifs Santé -->
+            <div class="preference-card">
+                <div class="card-header">
+                    <h4><i class="bi bi-activity me-2"></i>Objectifs Santé & Régime</h4>
+                    <p>Définissez vos objectifs de poids et besoins caloriques</p>
+                </div>
+                <div class="card-body">
+                    <div class="form-section">
+                        <div class="section-title">
+                            <i class="bi bi-target"></i>
+                            Objectif principal
+                        </div>
+                        <select class="form-select" id="dietGoal">
+                            <option value="">Aucun objectif spécifique</option>
+                            <option value="weight_loss">Perte de poids</option>
+                            <option value="weight_gain">Prise de poids</option>
+                            <option value="muscle_gain">Prise de muscle</option>
+                            <option value="maintain">Maintien du poids</option>
+                        </select>
+                    </div>
+
+                    <div class="weight-goals" id="weight-goals" style="display: none;">
+                        <div class="weight-input-group">
+                            <div>
+                                <label class="form-label">Poids actuel (kg)</label>
+                                <input type="number" class="form-control" id="currentWeight" placeholder="70" min="30" max="200" step="0.1">
+                            </div>
+                            <div>
+                                <label class="form-label">Poids objectif (kg)</label>
+                                <input type="number" class="form-control" id="targetWeight" placeholder="65" min="30" max="200" step="0.1">
+                            </div>
+                        </div>
+                        
+                        <div class="mt-3">
+                            <div class="range-container">
+                                <div class="range-label">
+                                    <label class="form-label">Calories par jour</label>
+                                    <span class="range-value" id="calories-value">2000</span>
+                                </div>
+                                <input type="range" class="form-range" id="dailyCalorieTarget" min="1200" max="3500" value="2000" step="50">
+                            </div>
+                        </div>
+
+                        <div class="calorie-display" id="calorie-recommendation">
+                            <i class="bi bi-lightbulb-fill me-2"></i>
+                            <strong>Recommandation:</strong> <span id="calorie-rec-text">2000 calories/jour pour maintenir le poids</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section Préférences de Repas -->
+            <div class="preference-card">
+                <div class="card-header">
+                    <h4><i class="bi bi-calendar-week-fill me-2"></i>Préférences des Repas</h4>
+                    <p>Choisissez quels types de repas inclure dans vos menus</p>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-section">
+                                <div class="section-title">
+                                    <i class="bi bi-clock"></i>
+                                    Moments des repas
+                                </div>
+                                <div class="form-check form-switch mb-2">
+                                    <input class="form-check-input" type="checkbox" id="includeLunch" checked>
+                                    <label class="form-check-label" for="includeLunch">
+                                        <i class="bi bi-sun me-1"></i>Déjeuners
+                                    </label>
+                                </div>
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="includeDinner" checked>
+                                    <label class="form-check-label" for="includeDinner">
+                                        <i class="bi bi-moon me-1"></i>Dîners
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-section">
+                                <div class="section-title">
+                                    <i class="bi bi-people"></i>
+                                    Public cible
+                                </div>
+                                <div class="form-check form-switch mb-2">
+                                    <input class="form-check-input" type="checkbox" id="includeAdultMeals" checked>
+                                    <label class="form-check-label" for="includeAdultMeals">
+                                        <i class="bi bi-person-fill me-1"></i>Repas adultes
+                                    </label>
+                                </div>
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="includeChildMeals" checked>
+                                    <label class="form-check-label" for="includeChildMeals">
+                                        <i class="bi bi-person-hearts me-1"></i>Repas enfants
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <div class="section-title">
+                            <i class="bi bi-wallet2"></i>
+                            Niveau de budget
+                        </div>
+                        <div class="skill-selector">
+                            <div class="skill-option" data-budget="low">
+                                <i class="bi bi-piggy-bank"></i>
+                                <strong>Économique</strong>
+                                <div class="mt-1 small text-muted">Ingrédients de base</div>
+                            </div>
+                            <div class="skill-option active" data-budget="medium">
+                                <i class="bi bi-currency-euro"></i>
+                                <strong>Modéré</strong>
+                                <div class="mt-1 small text-muted">Bon rapport qualité-prix</div>
+                            </div>
+                            <div class="skill-option" data-budget="high">
+                                <i class="bi bi-gem"></i>
+                                <strong>Premium</strong>
+                                <div class="mt-1 small text-muted">Ingrédients de qualité</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bouton de sauvegarde -->
+            <div class="text-center">
+                <button type="submit" class="save-button">
+                    <i class="bi bi-check-circle-fill me-2"></i>
+                    Sauvegarder mes préférences
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="preferences.js"></script>
+</body>
+</html>

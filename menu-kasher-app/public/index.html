@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu Kasher Familial</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2E5266;
+            --secondary-color: #6C9BD1;
+            --accent-color: #F4A261;
+            --success-color: #2A9D8F;
+            --warning-color: #E76F51;
+            --light-bg: #F8F9FA;
+            --card-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--light-bg);
+            color: #333;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            padding: 1.5rem 0;
+            margin-bottom: 2rem;
+            box-shadow: var(--card-shadow);
+        }
+
+        .nav-pills .nav-link {
+            border-radius: 20px;
+            margin: 0 0.25rem;
+            padding: 0.5rem 1rem;
+            color: var(--primary-color);
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .nav-pills .nav-link:hover {
+            background-color: var(--secondary-color);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .nav-pills .nav-link.active {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--accent-color);
+        }
+
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: var(--card-shadow);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            overflow: hidden;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+        }
+
+        .card-header {
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border: none;
+            padding: 1rem 1.5rem;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            border-radius: 20px;
+            padding: 0.5rem 1.5rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--secondary-color);
+            border-color: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+
+        .btn-success {
+            background-color: var(--success-color);
+            border-color: var(--success-color);
+            border-radius: 20px;
+        }
+
+        .btn-warning {
+            background-color: var(--accent-color);
+            border-color: var(--accent-color);
+            border-radius: 20px;
+            color: white;
+        }
+
+        .meal-card {
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .meal-type {
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.5rem;
+        }
+
+        .meal-type.lunch-children {
+            color: var(--accent-color);
+        }
+
+        .meal-type.dinner-children {
+            color: var(--secondary-color);
+        }
+
+        .meal-type.dinner-adults {
+            color: var(--primary-color);
+        }
+
+        .recipe-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--primary-color);
+        }
+
+        .recipe-description {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 1rem;
+            flex-grow: 1;
+        }
+
+        .recipe-meta {
+            font-size: 0.8rem;
+            color: #888;
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 3rem;
+        }
+
+        .loading .spinner-border {
+            color: var(--primary-color);
+        }
+
+        .alert {
+            border-radius: 10px;
+            border: none;
+        }
+
+        .menu-calendar {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .day-card {
+            border-left: 4px solid var(--accent-color);
+        }
+
+        .day-header {
+            background-color: rgba(244, 162, 97, 0.1);
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .shopping-list-item {
+            padding: 0.75rem;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+            background-color: white;
+            border-left: 3px solid var(--success-color);
+        }
+
+        .shopping-list-item.purchased {
+            opacity: 0.6;
+            text-decoration: line-through;
+            border-left-color: #ccc;
+        }
+
+        .category-header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 0.75rem 1rem;
+            font-weight: 600;
+        }
+
+        /* Styles pour les notifications */
+        .notification-item {
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+            cursor: pointer;
+        }
+
+        .notification-item:hover {
+            background-color: #f8f9fa;
+            border-left-color: var(--primary-color);
+        }
+
+        .notification-item.unread {
+            background-color: #fff3cd;
+            border-left-color: var(--warning-color);
+        }
+
+        .notification-item.unread:hover {
+            background-color: #ffeaa7;
+        }
+
+        .notification-badge {
+            font-size: 0.7rem;
+            padding: 0.25rem 0.5rem;
+        }
+
+        .notification-badge.info { background-color: var(--secondary-color) !important; }
+        .notification-badge.success { background-color: var(--success-color) !important; }
+        .notification-badge.warning { background-color: var(--warning-color) !important; }
+        .notification-badge.danger { background-color: var(--danger-color) !important; }
+
+        .notification-content {
+            max-height: 100px;
+            overflow-y: auto;
+        }
+
+        .notification-meta {
+            font-size: 0.8rem;
+            color: #6c757d;
+        }
+
+        .notification-actions {
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .notification-item:hover .notification-actions {
+            opacity: 1;
+        }
+
+        @media (max-width: 768px) {
+            .menu-calendar {
+                grid-template-columns: 1fr;
+            }
+            
+            .card {
+                margin-bottom: 1rem;
+            }
+            
+            .nav-pills {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <h1 class="mb-0">
+                        <i class="bi bi-house-heart me-2"></i>
+                        Menu Kasher Familial
+                    </h1>
+                    <p class="mb-0 opacity-75">Organisez vos repas en famille</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <a href="/preferences.html" class="btn btn-warning btn-sm me-2">
+                        <i class="bi bi-gear-fill"></i> Préférences
+                    </a>
+                    <button class="btn btn-light btn-sm" onclick="showStats()">
+                        <i class="bi bi-graph-up"></i> Statistiques
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Navigation -->
+        <ul class="nav nav-pills justify-content-center mb-4" id="main-nav" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="menus-tab" data-bs-toggle="pill" data-bs-target="#menus" type="button" role="tab">
+                    <i class="bi bi-calendar-week me-1"></i> Menus
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="recipes-tab" data-bs-toggle="pill" data-bs-target="#recipes" type="button" role="tab">
+                    <i class="bi bi-book me-1"></i> Recettes
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="shopping-tab" data-bs-toggle="pill" data-bs-target="#shopping" type="button" role="tab">
+                    <i class="bi bi-basket me-1"></i> Courses
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="ingredients-tab" data-bs-toggle="pill" data-bs-target="#ingredients" type="button" role="tab">
+                    <i class="bi bi-egg me-1"></i> Ingrédients
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link position-relative" id="notifications-tab" data-bs-toggle="pill" data-bs-target="#notifications" type="button" role="tab" onclick="loadNotifications()">
+                    <i class="bi bi-bell me-1"></i> Notifications
+                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="notificationBadge" style="display: none;">
+                        0
+                    </span>
+                </button>
+            </li>
+        </ul>
+
+        <!-- Content -->
+        <div class="tab-content" id="main-content">
+            <!-- Section Menus -->
+            <div class="tab-pane fade show active" id="menus" role="tabpanel">
+                <div class="row mb-4">
+                    <div class="col-md-8">
+                        <h2>Mes Menus</h2>
+                        <p class="text-muted">Gérez vos menus hebdomadaires kasher pour toute la famille</p>
+                    </div>
+                    <div class="col-md-4 text-md-end">
+                        <button class="btn btn-primary" onclick="createNewMenu()">
+                            <i class="bi bi-plus-lg me-1"></i> Nouveau Menu
+                        </button>
+                    </div>
+                </div>
+
+                <div id="menus-list" class="loading">
+                    <div class="spinner-border" role="status">
+                        <span class="visually-hidden">Chargement...</span>
+                    </div>
+                    <p class="mt-3">Chargement des menus...</p>
+                </div>
+            </div>
+
+            <!-- Section Recettes -->
+            <div class="tab-pane fade" id="recipes" role="tabpanel">
+                <div class="row mb-4">
+                    <div class="col-md-8">
+                        <h2>Mes Recettes</h2>
+                        <p class="text-muted">Collection de recettes kasher adaptées à votre famille</p>
+                    </div>
+                    <div class="col-md-4 text-md-end">
+                        <button class="btn btn-primary" onclick="createNewRecipe()">
+                            <i class="bi bi-plus-lg me-1"></i> Nouvelle Recette
+                        </button>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <input type="text" class="form-control" id="recipe-search" placeholder="Rechercher une recette...">
+                    </div>
+                    <div class="col-md-6">
+                        <select class="form-select" id="recipe-filter">
+                            <option value="">Tous les types de repas</option>
+                            <option value="lunch_children">Déjeuner enfants</option>
+                            <option value="dinner_children">Dîner enfants</option>
+                            <option value="dinner_adults">Dîner adultes</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div id="recipes-list" class="loading">
+                    <div class="spinner-border" role="status">
+                        <span class="visually-hidden">Chargement...</span>
+                    </div>
+                    <p class="mt-3">Chargement des recettes...</p>
+                </div>
+            </div>
+
+            <!-- Section Courses -->
+            <div class="tab-pane fade" id="shopping" role="tabpanel">
+                <div class="row mb-4">
+                    <div class="col-md-8">
+                        <h2>Listes de Courses</h2>
+                        <p class="text-muted">Listes automatiques générées à partir de vos menus</p>
+                    </div>
+                    <div class="col-md-4 text-md-end">
+                        <button class="btn btn-success" onclick="generateShoppingList()">
+                            <i class="bi bi-magic me-1"></i> Générer Liste
+                        </button>
+                    </div>
+                </div>
+
+                <div id="shopping-lists" class="loading">
+                    <div class="spinner-border" role="status">
+                        <span class="visually-hidden">Chargement...</span>
+                    </div>
+                    <p class="mt-3">Chargement des listes de courses...</p>
+                </div>
+            </div>
+
+            <!-- Section Ingrédients -->
+            <div class="tab-pane fade" id="ingredients" role="tabpanel">
+                <div class="row mb-4">
+                    <div class="col-md-8">
+                        <h2>Ingrédients</h2>
+                        <p class="text-muted">Base d'ingrédients kasher pour vos recettes</p>
+                    </div>
+                    <div class="col-md-4 text-md-end">
+                        <button class="btn btn-primary" onclick="addNewIngredient()">
+                            <i class="bi bi-plus-lg me-1"></i> Nouvel Ingrédient
+                        </button>
+                    </div>
+                </div>
+
+                <div id="ingredients-list" class="loading">
+                    <div class="spinner-border" role="status">
+                        <span class="visually-hidden">Chargement...</span>
+                    </div>
+                    <p class="mt-3">Chargement des ingrédients...</p>
+                </div>
+            </div>
+
+            <!-- Section Notifications -->
+            <div class="tab-pane fade" id="notifications" role="tabpanel">
+                <div class="row mb-4">
+                    <div class="col-md-8">
+                        <h2>Mes Notifications</h2>
+                        <p class="text-muted">Restez informé des nouvelles importantes et des mises à jour</p>
+                    </div>
+                    <div class="col-md-4 text-md-end">
+                        <button class="btn btn-outline-primary btn-sm me-2" onclick="loadNotifications()">
+                            <i class="bi bi-arrow-clockwise me-1"></i> Actualiser
+                        </button>
+                        <button class="btn btn-success btn-sm" onclick="markAllAsRead()" id="markAllReadBtn" style="display: none;">
+                            <i class="bi bi-check-all me-1"></i> Tout marquer lu
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Filtres -->
+                <div class="row mb-4">
+                    <div class="col-md-4">
+                        <select class="form-select" id="notificationTypeFilter" onchange="filterNotifications()">
+                            <option value="">Tous les types</option>
+                            <option value="info">Information</option>
+                            <option value="success">Succès</option>
+                            <option value="warning">Avertissement</option>
+                            <option value="danger">Important</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <select class="form-select" id="notificationCategoryFilter" onchange="filterNotifications()">
+                            <option value="">Toutes les catégories</option>
+                            <option value="general">Général</option>
+                            <option value="menu">Menu</option>
+                            <option value="recipe">Recette</option>
+                            <option value="user">Compte</option>
+                            <option value="system">Système</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <select class="form-select" id="notificationStatusFilter" onchange="filterNotifications()">
+                            <option value="all">Toutes</option>
+                            <option value="unread">Non lues</option>
+                            <option value="read">Lues</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Stats -->
+                <div class="row mb-4" id="notificationStats" style="display: none;">
+                    <div class="col-md-3">
+                        <div class="card text-center">
+                            <div class="card-body">
+                                <h5 class="card-title text-primary" id="totalNotifications">0</h5>
+                                <p class="card-text text-muted">Total</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card text-center">
+                            <div class="card-body">
+                                <h5 class="card-title text-warning" id="unreadNotifications">0</h5>
+                                <p class="card-text text-muted">Non lues</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card text-center">
+                            <div class="card-body">
+                                <h5 class="card-title text-success" id="readNotifications">0</h5>
+                                <p class="card-text text-muted">Lues</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card text-center">
+                            <div class="card-body">
+                                <h5 class="card-title text-info" id="recentNotifications">0</h5>
+                                <p class="card-text text-muted">Récentes</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Liste des notifications -->
+                <div id="notifications-list" class="loading">
+                    <div class="spinner-border" role="status">
+                        <span class="visually-hidden">Chargement...</span>
+                    </div>
+                    <p class="mt-3">Chargement des notifications...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <div class="modal fade" id="menuModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Détails du Menu</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="menuModalBody">
+                    <!-- Contenu dynamique -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="recipeModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Détails de la Recette</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="recipeModalBody">
+                    <!-- Contenu dynamique -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

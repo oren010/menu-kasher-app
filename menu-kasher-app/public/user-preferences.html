@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mes Préférences - Menu Kasher Familial</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --success-color: #27ae60;
+            --danger-color: #e74c3c;
+            --warning-color: #f39c12;
+            --info-color: #17a2b8;
+            --light-color: #f8f9fa;
+            --dark-color: #343a40;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        .header-card {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+        }
+
+        .preferences-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .form-control, .form-select {
+            border-radius: 15px;
+            border: 2px solid #e9ecef;
+            padding: 0.75rem 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+        }
+
+        .btn-custom {
+            border-radius: 25px;
+            padding: 0.75rem 2rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border: none;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary-custom {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+        }
+
+        .btn-primary-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            color: white;
+        }
+
+        .btn-success-custom {
+            background: linear-gradient(135deg, var(--success-color), #2ecc71);
+            color: white;
+        }
+
+        .btn-success-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            color: white;
+        }
+
+        .btn-outline-custom {
+            border: 2px solid var(--secondary-color);
+            color: var(--secondary-color);
+            background: transparent;
+        }
+
+        .btn-outline-custom:hover {
+            background: var(--secondary-color);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .preference-group {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid var(--secondary-color);
+        }
+
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .form-check {
+            padding: 0.5rem;
+            border-radius: 10px;
+            transition: background-color 0.3s ease;
+        }
+
+        .form-check:hover {
+            background-color: rgba(52, 152, 219, 0.1);
+        }
+
+        .form-check-input:checked {
+            background-color: var(--secondary-color);
+            border-color: var(--secondary-color);
+        }
+
+        .badge-custom {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin: 0.25rem;
+        }
+
+        .badge-kosher { background: #e8f5e8; color: #27ae60; }
+        .badge-allergen { background: #fff3cd; color: #856404; }
+        .badge-dietary { background: #e3f2fd; color: #1976d2; }
+
+        .range-slider {
+            margin: 1rem 0;
+        }
+
+        .range-value {
+            background: var(--secondary-color);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            font-weight: bold;
+            margin-left: 0.5rem;
+        }
+
+        .suggestions-panel {
+            background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .suggestion-item {
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-left: 4px solid var(--warning-color);
+        }
+
+        .alert-custom {
+            border-radius: 15px;
+            border: none;
+            padding: 1rem 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .loading-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .preferences-card {
+                padding: 1.5rem;
+            }
+
+            .checkbox-group {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header-card">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h1 class="display-5 fw-bold mb-2">
+                        <i class="bi bi-sliders me-3"></i>
+                        Mes Préférences
+                    </h1>
+                    <p class="lead mb-0">
+                        Personnalisez votre expérience Menu Kasher selon vos besoins
+                    </p>
+                </div>
+                <div>
+                    <button class="btn btn-light btn-custom" onclick="window.location.href='index.html'">
+                        <i class="bi bi-arrow-left"></i>
+                        Retour au Menu
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Suggestions personnalisées -->
+        <div id="suggestionsPanel" class="suggestions-panel" style="display: none;">
+            <h5 class="fw-bold mb-3">
+                <i class="bi bi-lightbulb text-warning me-2"></i>
+                Suggestions d'amélioration
+            </h5>
+            <div id="suggestionsList">
+                <!-- Les suggestions seront chargées ici -->
+            </div>
+        </div>
+
+        <!-- Formulaire de préférences -->
+        <form id="preferencesForm">
+            <!-- Informations familiales -->
+            <div class="preferences-card">
+                <div class="section-title">
+                    <i class="bi bi-people"></i>
+                    Composition Familiale
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Nombre d'adultes</label>
+                            <input type="number" class="form-control" id="adultsCount" min="1" max="10" value="2">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Nombre d'enfants</label>
+                            <input type="number" class="form-control" id="childrenCount" min="0" max="10" value="2">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Préférences alimentaires -->
+            <div class="preferences-card">
+                <div class="section-title">
+                    <i class="bi bi-heart-pulse"></i>
+                    Préférences Alimentaires
+                </div>
+
+                <div class="preference-group">
+                    <label class="form-label fw-bold">Niveau Kasher</label>
+                    <select class="form-select" id="kosherLevel">
+                        <option value="none">Aucun</option>
+                        <option value="basic">Basique</option>
+                        <option value="moderate">Modéré</option>
+                        <option value="strict">Strict</option>
+                    </select>
+                </div>
+
+                <div class="preference-group">
+                    <label class="form-label fw-bold">Restrictions alimentaires</label>
+                    <div class="checkbox-group">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="vegan" value="vegan">
+                            <label class="form-check-label" for="vegan">Vegan</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="vegetarian" value="vegetarian">
+                            <label class="form-check-label" for="vegetarian">Végétarien</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="pescatarian" value="pescatarian">
+                            <label class="form-check-label" for="pescatarian">Pescatarien</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="halal" value="halal">
+                            <label class="form-check-label" for="halal">Halal</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="preference-group">
+                    <label class="form-label fw-bold">Allergènes à éviter</label>
+                    <div class="checkbox-group">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="nuts" value="nuts">
+                            <label class="form-check-label" for="nuts">Noix/Fruits à coque</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="dairy" value="dairy">
+                            <label class="form-check-label" for="dairy">Produits laitiers</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="gluten" value="gluten">
+                            <label class="form-check-label" for="gluten">Gluten</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="eggs" value="eggs">
+                            <label class="form-check-label" for="eggs">Œufs</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="shellfish" value="shellfish">
+                            <label class="form-check-label" for="shellfish">Fruits de mer</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="soy" value="soy">
+                            <label class="form-check-label" for="soy">Soja</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="preference-group">
+                    <label class="form-label fw-bold">Ingrédients à exclure (optionnel)</label>
+                    <textarea class="form-control" id="excludedIngredients" rows="3" 
+                              placeholder="Ex: champignons, tofu, épinards (séparés par des virgules)"></textarea>
+                    <div class="form-text">Listez les ingrédients que vous n'aimez pas, séparés par des virgules</div>
+                </div>
+            </div>
+
+            <!-- Préférences de cuisine -->
+            <div class="preferences-card">
+                <div class="section-title">
+                    <i class="bi bi-tools"></i>
+                    Niveau de Cuisine
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="preference-group">
+                            <label class="form-label fw-bold">Votre niveau de cuisine</label>
+                            <select class="form-select" id="cookingSkillLevel">
+                                <option value="beginner">Débutant</option>
+                                <option value="intermediate">Intermédiaire</option>
+                                <option value="advanced">Avancé</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="preference-group">
+                            <label class="form-label fw-bold">Difficulté préférée</label>
+                            <select class="form-select" id="preferredDifficulty">
+                                <option value="easy">Facile</option>
+                                <option value="medium">Moyen</option>
+                                <option value="hard">Difficile</option>
+                                <option value="mixed">Varié</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Objectifs santé -->
+            <div class="preferences-card">
+                <div class="section-title">
+                    <i class="bi bi-activity"></i>
+                    Objectifs Santé
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Objectif diététique</label>
+                            <select class="form-select" id="dietGoal">
+                                <option value="">Aucun objectif particulier</option>
+                                <option value="weight_loss">Perte de poids</option>
+                                <option value="weight_gain">Prise de poids</option>
+                                <option value="muscle_gain">Prise de masse musculaire</option>
+                                <option value="maintain">Maintien du poids</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Calories quotidiennes cibles</label>
+                            <input type="number" class="form-control" id="dailyCalorieTarget" 
+                                   placeholder="Ex: 2000" min="1000" max="5000">
+                            <div class="form-text">Optionnel - pour un suivi plus précis</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Poids actuel (kg)</label>
+                            <input type="number" class="form-control" id="currentWeight" 
+                                   placeholder="Ex: 70" step="0.1" min="30" max="200">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Poids cible (kg)</label>
+                            <input type="number" class="form-control" id="targetWeight" 
+                                   placeholder="Ex: 65" step="0.1" min="30" max="200">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Préférences de repas -->
+            <div class="preferences-card">
+                <div class="section-title">
+                    <i class="bi bi-clock"></i>
+                    Préférences de Repas
+                </div>
+
+                <div class="preference-group">
+                    <label class="form-label fw-bold">Types de repas à inclure</label>
+                    <div class="checkbox-group">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="includeLunch" checked>
+                            <label class="form-check-label" for="includeLunch">Déjeuners</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="includeDinner" checked>
+                            <label class="form-check-label" for="includeDinner">Dîners</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="includeAdultMeals" checked>
+                            <label class="form-check-label" for="includeAdultMeals">Repas adultes</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="includeChildMeals" checked>
+                            <label class="form-check-label" for="includeChildMeals">Repas enfants</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Planning et budget -->
+            <div class="preferences-card">
+                <div class="section-title">
+                    <i class="bi bi-calendar-week"></i>
+                    Planning et Budget
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="preference-group">
+                            <label class="form-label fw-bold">Repas raffinés par semaine</label>
+                            <div class="range-slider">
+                                <input type="range" class="form-range" id="weeklyRefinedMeals" 
+                                       min="0" max="7" value="2" oninput="updateRangeValue('weeklyRefinedMeals')">
+                                <span class="range-value" id="weeklyRefinedMealsValue">2</span>
+                            </div>
+                            <div class="form-text">Nombre de repas plus élaborés par semaine</div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="preference-group">
+                            <label class="form-label fw-bold">Niveau de budget</label>
+                            <select class="form-select" id="budgetLevel">
+                                <option value="low">Économique</option>
+                                <option value="medium">Moyen</option>
+                                <option value="high">Élevé</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Boutons d'action -->
+            <div class="preferences-card">
+                <div class="d-flex justify-content-between flex-wrap gap-3">
+                    <div>
+                        <button type="button" class="btn btn-outline-custom btn-custom" onclick="resetToDefaults()">
+                            <i class="bi bi-arrow-clockwise"></i>
+                            Réinitialiser
+                        </button>
+                        <button type="button" class="btn btn-outline-custom btn-custom" onclick="loadSuggestions()">
+                            <i class="bi bi-lightbulb"></i>
+                            Voir Suggestions
+                        </button>
+                    </div>
+                    <div>
+                        <button type="submit" class="btn btn-success-custom btn-custom">
+                            <i class="bi bi-check-circle"></i>
+                            Sauvegarder mes Préférences
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Loading overlay -->
+    <div id="loadingOverlay" class="loading-overlay" style="display: none;">
+        <div class="loading-content">
+            <div class="spinner-border text-primary mb-3" role="status">
+                <span class="visually-hidden">Chargement...</span>
+            </div>
+            <h5>Mise à jour de vos préférences...</h5>
+        </div>
+    </div>
+
+    <!-- Scripts Bootstrap et JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Au chargement de la page
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAuthentication();
+            loadUserPreferences();
+            setupFormHandlers();
+        });
+
+        function checkAuthentication() {
+            const token = localStorage.getItem('userToken') || localStorage.getItem('adminToken');
+            if (!token) {
+                window.location.href = 'login.html';
+                return;
+            }
+        }
+
+        function setupFormHandlers() {
+            document.getElementById('preferencesForm').addEventListener('submit', savePreferences);
+        }
+
+        async function loadUserPreferences() {
+            try {
+                showLoading(true);
+                
+                const token = localStorage.getItem('userToken') || localStorage.getItem('adminToken');
+                const response = await fetch('/api/preferences/me', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    populateForm(data.preferences);
+                } else if (response.status === 401) {
+                    window.location.href = 'login.html';
+                } else {
+                    showError('Erreur lors du chargement des préférences');
+                }
+            } catch (error) {
+                console.error('Erreur:', error);
+                showError('Erreur de connexion');
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        function populateForm(preferences) {
+            // Informations familiales
+            document.getElementById('adultsCount').value = preferences.adultsCount || 2;
+            document.getElementById('childrenCount').value = preferences.childrenCount || 2;
+
+            // Préférences alimentaires
+            document.getElementById('kosherLevel').value = preferences.kosherLevel || 'none';
+            
+            // Restrictions alimentaires
+            const restrictions = preferences.dietaryRestrictions || [];
+            restrictions.forEach(restriction => {
+                const checkbox = document.getElementById(restriction);
+                if (checkbox) checkbox.checked = true;
+            });
+
+            // Allergènes
+            const allergens = preferences.allergens || [];
+            allergens.forEach(allergen => {
+                const checkbox = document.getElementById(allergen);
+                if (checkbox) checkbox.checked = true;
+            });
+
+            // Ingrédients exclus
+            const excluded = preferences.excludedIngredients || [];
+            document.getElementById('excludedIngredients').value = excluded.join(', ');
+
+            // Niveau de cuisine
+            document.getElementById('cookingSkillLevel').value = preferences.cookingSkillLevel || 'intermediate';
+            document.getElementById('preferredDifficulty').value = preferences.preferredDifficulty || 'medium';
+
+            // Objectifs santé
+            document.getElementById('dietGoal').value = preferences.dietGoal || '';
+            document.getElementById('dailyCalorieTarget').value = preferences.dailyCalorieTarget || '';
+            document.getElementById('currentWeight').value = preferences.currentWeight || '';
+            document.getElementById('targetWeight').value = preferences.targetWeight || '';
+
+            // Préférences de repas
+            document.getElementById('includeLunch').checked = preferences.includeLunch !== false;
+            document.getElementById('includeDinner').checked = preferences.includeDinner !== false;
+            document.getElementById('includeAdultMeals').checked = preferences.includeAdultMeals !== false;
+            document.getElementById('includeChildMeals').checked = preferences.includeChildMeals !== false;
+
+            // Planning et budget
+            document.getElementById('weeklyRefinedMeals').value = preferences.weeklyRefinedMeals || 2;
+            updateRangeValue('weeklyRefinedMeals');
+            document.getElementById('budgetLevel').value = preferences.budgetLevel || 'medium';
+        }
+
+        async function savePreferences(event) {
+            event.preventDefault();
+            
+            try {
+                showLoading(true);
+
+                const preferences = {
+                    // Informations familiales
+                    adultsCount: parseInt(document.getElementById('adultsCount').value),
+                    childrenCount: parseInt(document.getElementById('childrenCount').value),
+
+                    // Préférences alimentaires
+                    kosherLevel: document.getElementById('kosherLevel').value,
+                    dietaryRestrictions: getCheckedValues(['vegan', 'vegetarian', 'pescatarian', 'halal']),
+                    allergens: getCheckedValues(['nuts', 'dairy', 'gluten', 'eggs', 'shellfish', 'soy']),
+                    excludedIngredients: parseIngredientsList(document.getElementById('excludedIngredients').value),
+
+                    // Niveau de cuisine
+                    cookingSkillLevel: document.getElementById('cookingSkillLevel').value,
+                    preferredDifficulty: document.getElementById('preferredDifficulty').value,
+
+                    // Objectifs santé
+                    dietGoal: document.getElementById('dietGoal').value || null,
+                    dailyCalorieTarget: parseInt(document.getElementById('dailyCalorieTarget').value) || null,
+                    currentWeight: parseFloat(document.getElementById('currentWeight').value) || null,
+                    targetWeight: parseFloat(document.getElementById('targetWeight').value) || null,
+
+                    // Préférences de repas
+                    includeLunch: document.getElementById('includeLunch').checked,
+                    includeDinner: document.getElementById('includeDinner').checked,
+                    includeAdultMeals: document.getElementById('includeAdultMeals').checked,
+                    includeChildMeals: document.getElementById('includeChildMeals').checked,
+
+                    // Planning et budget
+                    weeklyRefinedMeals: parseInt(document.getElementById('weeklyRefinedMeals').value),
+                    budgetLevel: document.getElementById('budgetLevel').value
+                };
+
+                const token = localStorage.getItem('userToken') || localStorage.getItem('adminToken');
+                const response = await fetch('/api/preferences/me', {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(preferences)
+                });
+
+                if (response.ok) {
+                    showSuccess('Préférences sauvegardées avec succès !');
+                    setTimeout(() => {
+                        window.location.href = 'index.html';
+                    }, 2000);
+                } else {
+                    const error = await response.json();
+                    showError(error.message || 'Erreur lors de la sauvegarde');
+                }
+            } catch (error) {
+                console.error('Erreur:', error);
+                showError('Erreur de connexion');
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        function getCheckedValues(ids) {
+            return ids.filter(id => document.getElementById(id).checked);
+        }
+
+        function parseIngredientsList(value) {
+            return value.split(',')
+                .map(item => item.trim())
+                .filter(item => item.length > 0);
+        }
+
+        function updateRangeValue(rangeId) {
+            const range = document.getElementById(rangeId);
+            const valueSpan = document.getElementById(rangeId + 'Value');
+            valueSpan.textContent = range.value;
+        }
+
+        async function loadSuggestions() {
+            try {
+                const token = localStorage.getItem('userToken') || localStorage.getItem('adminToken');
+                const response = await fetch('/api/preferences/me/suggestions', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    displaySuggestions(data.suggestions);
+                } else {
+                    showError('Erreur lors du chargement des suggestions');
+                }
+            } catch (error) {
+                console.error('Erreur:', error);
+                showError('Erreur de connexion');
+            }
+        }
+
+        function displaySuggestions(suggestions) {
+            const panel = document.getElementById('suggestionsPanel');
+            const list = document.getElementById('suggestionsList');
+
+            if (suggestions.length === 0) {
+                list.innerHTML = '<p class="text-muted">Aucune suggestion disponible. Vos préférences semblent complètes !</p>';
+            } else {
+                list.innerHTML = suggestions.map(suggestion => `
+                    <div class="suggestion-item">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <h6 class="fw-bold mb-1">${suggestion.title}</h6>
+                                <p class="mb-0 text-muted">${suggestion.description}</p>
+                            </div>
+                            <span class="badge bg-${suggestion.priority === 'high' ? 'danger' : suggestion.priority === 'medium' ? 'warning' : 'info'}">
+                                ${suggestion.priority}
+                            </span>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            panel.style.display = 'block';
+        }
+
+        async function resetToDefaults() {
+            if (!confirm('Êtes-vous sûr de vouloir réinitialiser toutes vos préférences aux valeurs par défaut ?')) {
+                return;
+            }
+
+            try {
+                showLoading(true);
+
+                const token = localStorage.getItem('userToken') || localStorage.getItem('adminToken');
+                const response = await fetch('/api/preferences/me/reset', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    showSuccess('Préférences réinitialisées avec succès !');
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1500);
+                } else {
+                    const error = await response.json();
+                    showError(error.message || 'Erreur lors de la réinitialisation');
+                }
+            } catch (error) {
+                console.error('Erreur:', error);
+                showError('Erreur de connexion');
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        function showLoading(show) {
+            document.getElementById('loadingOverlay').style.display = show ? 'flex' : 'none';
+        }
+
+        function showSuccess(message) {
+            const alertHTML = `
+                <div class="alert alert-success alert-custom alert-dismissible fade show" role="alert">
+                    <i class="bi bi-check-circle me-2"></i>
+                    ${message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            `;
+            
+            const container = document.querySelector('.container');
+            container.insertAdjacentHTML('afterbegin', alertHTML);
+            
+            setTimeout(() => {
+                const alert = container.querySelector('.alert');
+                if (alert) alert.remove();
+            }, 5000);
+        }
+
+        function showError(message) {
+            const alertHTML = `
+                <div class="alert alert-danger alert-custom alert-dismissible fade show" role="alert">
+                    <i class="bi bi-exclamation-triangle me-2"></i>
+                    ${message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            `;
+            
+            const container = document.querySelector('.container');
+            container.insertAdjacentHTML('afterbegin', alertHTML);
+            
+            setTimeout(() => {
+                const alert = container.querySelector('.alert');
+                if (alert) alert.remove();
+            }, 5000);
+        }
+    </script>
+</body>
+</html>

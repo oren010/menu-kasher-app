@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maître Mike Gabriel - Avocat Spécialisé | Cabinet d'Avocats</title>
+    <meta name="description" content="Maître Mike Gabriel, avocat spécialisé en droit des affaires, droit pénal et droit de la famille. Consultation gratuite et expertise juridique de qualité.">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #1a365d;
+            --secondary-color: #2c5282;
+            --accent-color: #d69e2e;
+            --text-dark: #2d3748;
+            --text-light: #4a5568;
+            --bg-light: #f7fafc;
+            --white: #ffffff;
+            --shadow: 0 10px 25px rgba(0,0,0,0.1);
+            --shadow-lg: 0 20px 40px rgba(0,0,0,0.15);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: var(--text-dark);
+            overflow-x: hidden;
+        }
+
+        .font-display {
+            font-family: 'Playfair Display', serif;
+        }
+
+        /* Navigation */
+        .navbar {
+            background: rgba(26, 54, 93, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 0;
+            transition: all 0.3s ease;
+        }
+
+        .navbar-brand {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--white) !important;
+        }
+
+        .navbar-nav .nav-link {
+            color: rgba(255,255,255,0.9) !important;
+            font-weight: 500;
+            margin: 0 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .navbar-nav .nav-link:hover {
+            color: var(--accent-color) !important;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: var(--white);
+            padding: 8rem 0 6rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 100" fill="rgba(255,255,255,0.05)"><polygon points="1000,100 1000,0 0,100"/></svg>');
+            background-size: cover;
+        }
+
+        .hero .container {
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+        }
+
+        .hero .lead {
+            font-size: 1.3rem;
+            font-weight: 300;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        .btn-primary-custom {
+            background: var(--accent-color);
+            border: none;
+            padding: 1rem 2rem;
+            font-weight: 600;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-primary-custom:hover {
+            background: #b7791f;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        /* Specializations */
+        .specializations {
+            padding: 6rem 0;
+            background: var(--bg-light);
+        }
+
+        .specialization-card {
+            background: var(--white);
+            border-radius: 15px;
+            padding: 2.5rem;
+            text-align: center;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+            height: 100%;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .specialization-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .specialization-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--accent-color), #e69500);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            font-size: 2rem;
+            color: var(--white);
+        }
+
+        .specialization-card h3 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        /* About Section */
+        .about {
+            padding: 6rem 0;
+            background: var(--white);
+        }
+
+        .about-content {
+            padding-left: 2rem;
+        }
+
+        .profile-image {
+            border-radius: 15px;
+            box-shadow: var(--shadow-lg);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        /* Contact Form */
+        .contact {
+            padding: 6rem 0;
+            background: var(--bg-light);
+        }
+
+        .contact-form {
+            background: var(--white);
+            padding: 3rem;
+            border-radius: 20px;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .form-control {
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 1rem;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(214, 158, 46, 0.1);
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 0.5rem;
+        }
+
+        /* Statistics */
+        .stats {
+            background: var(--primary-color);
+            color: var(--white);
+            padding: 4rem 0;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 700;
+            display: block;
+            color: var(--accent-color);
+        }
+
+        .stat-label {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        /* Testimonials */
+        .testimonials {
+            padding: 6rem 0;
+            background: var(--white);
+        }
+
+        .testimonial-card {
+            background: var(--bg-light);
+            padding: 2.5rem;
+            border-radius: 15px;
+            border-left: 5px solid var(--accent-color);
+            margin-bottom: 2rem;
+        }
+
+        .testimonial-text {
+            font-style: italic;
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.8;
+        }
+
+        .testimonial-author {
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--text-dark);
+            color: var(--white);
+            padding: 3rem 0 2rem;
+        }
+
+        .footer h5 {
+            color: var(--accent-color);
+            margin-bottom: 1rem;
+        }
+
+        .footer a {
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer a:hover {
+            color: var(--accent-color);
+        }
+
+        /* Animations */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .hero .lead {
+                font-size: 1.1rem;
+            }
+            
+            .about-content {
+                padding-left: 0;
+                margin-top: 2rem;
+            }
+            
+            .contact-form {
+                padding: 2rem;
+            }
+        }
+
+        /* Legal Badge */
+        .legal-badge {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--accent-color);
+            color: var(--white);
+            padding: 1rem;
+            border-radius: 50%;
+            box-shadow: var(--shadow-lg);
+            z-index: 1000;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .legal-badge:hover {
+            transform: scale(1.1);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg fixed-top">
+        <div class="container">
+            <a class="navbar-brand font-display" href="#home">Me Mike Gabriel</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#home">Accueil</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#specializations">Spécialisations</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#about">À Propos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#contact">Contact</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-8">
+                    <h1 class="font-display fade-in">Maître Mike Gabriel</h1>
+                    <p class="lead fade-in">Avocat spécialisé en droit des affaires, droit pénal et droit de la famille. Plus de 15 ans d'expérience au service de votre réussite juridique.</p>
+                    <div class="fade-in">
+                        <a href="#contact" class="btn btn-primary-custom btn-lg me-3">
+                            <i class="bi bi-calendar-check me-2"></i>
+                            Consultation Gratuite
+                        </a>
+                        <a href="tel:+33123456789" class="btn btn-outline-light btn-lg">
+                            <i class="bi bi-telephone me-2"></i>
+                            Appel d'urgence
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-4 text-center">
+                    <div class="hero-badges fade-in">
+                        <div class="badge bg-light text-dark mb-2 p-3">
+                            <i class="bi bi-award-fill text-warning me-2"></i>
+                            Barreau de Paris
+                        </div>
+                        <div class="badge bg-light text-dark p-3">
+                            <i class="bi bi-star-fill text-warning me-2"></i>
+                            15+ ans d'expérience
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Statistics -->
+    <section class="stats">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3 col-6">
+                    <div class="stat-item fade-in">
+                        <span class="stat-number" data-count="500">0</span>
+                        <div class="stat-label">Clients Satisfaits</div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6">
+                    <div class="stat-item fade-in">
+                        <span class="stat-number" data-count="95">0</span>
+                        <div class="stat-label">% de Réussite</div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6">
+                    <div class="stat-item fade-in">
+                        <span class="stat-number" data-count="15">0</span>
+                        <div class="stat-label">Années d'Expérience</div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6">
+                    <div class="stat-item fade-in">
+                        <span class="stat-number" data-count="24">0</span>
+                        <div class="stat-label">Heures Disponibilité</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Specializations -->
+    <section id="specializations" class="specializations">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 mx-auto text-center mb-5">
+                    <h2 class="font-display h1 fade-in">Mes Spécialisations</h2>
+                    <p class="lead fade-in">Une expertise reconnue dans les domaines clés du droit</p>
+                </div>
+            </div>
+            <div class="row g-4">
+                <div class="col-lg-4 col-md-6">
+                    <div class="specialization-card fade-in">
+                        <div class="specialization-icon">
+                            <i class="bi bi-building"></i>
+                        </div>
+                        <h3>Droit des Affaires</h3>
+                        <p>Création d'entreprises, contrats commerciaux, fusions-acquisitions, restructurations et contentieux commercial.</p>
+                        <ul class="list-unstyled text-start mt-3">
+                            <li><i class="bi bi-check-circle-fill text-success me-2"></i>Création de sociétés</li>
+                            <li><i class="bi bi-check-circle-fill text-success me-2"></i>Contrats commerciaux</li>
+                            <li><i class="bi bi-check-circle-fill text-success me-2"></i>Fusions & Acquisitions</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <div class="specialization-card fade-in">
+                        <div class="specialization-icon">
+                            <i class="bi bi-shield-check"></i>
+                        </div>
+                        <h3>Droit Pénal</h3>
+                        <p>Défense pénale, garde à vue, comparutions, procédures d'appel et cassation. Protection de vos droits fondamentaux.</p>
+                        <ul class="list-unstyled text-start mt-3">
+                            <li><i class="bi bi-check-circle-fill text-success me-2"></i>Défense pénale</li>
+                            <li><i class="bi bi-check-circle-fill text-success me-2"></i>Garde à vue</li>
+                            <li><i class="bi bi-check-circle-fill text-success me-2"></i>Comparutions immédiates</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <div class="specialization-card fade-in">
+                        <div class="specialization-icon">
+                            <i class="bi bi-heart"></i>
+                        </div>
+                        <h3>Droit de la Famille</h3>
+                        <p>Divorce, garde d'enfants, pension alimentaire, successions et protection des personnes vulnérables.</p>
+                        <ul class="list-unstyled text-start mt-3">
+                            <li><i class="bi bi-check-circle-fill text-success me-2"></i>Procédures de divorce</li>
+                            <li><i class="bi bi-check-circle-fill text-success me-2"></i>Garde d'enfants</li>
+                            <li><i class="bi bi-check-circle-fill text-success me-2"></i>Successions</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <div class="specialization-card fade-in">
+                        <div class="specialization-icon">
+                            <i class="bi bi-house"></i>
+                        </div>
+                        <h3>Droit Immobilier</h3>
+                        <p>Transactions immobilières, baux commerciaux et d'habitation, copropriété et contentieux immobiliers.</p>
+                        <ul class="list-unstyled text-start mt-3">
+                            <li><i class="bi bi-check-circle-fill text-success me-2"></i>Ventes immobilières</li>
+                            <li><i class="bi bi-check-circle-fill text-success me-2"></i>Baux commerciaux</li>
+                            <li><i class="bi bi-check-circle-fill text-success me-2"></i>Copropriété</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <div class="specialization-card fade-in">
+                        <div class="specialization-icon">
+                            <i class="bi bi-briefcase"></i>
+                        </div>
+                        <h3>Droit du Travail</h3>
+                        <p>Relations employeur-employé, licenciements, harcèlement, négociations collectives et prud'hommes.</p>
+                        <ul class="list-unstyled text-start mt-3">
+                            <li><i class="bi bi-check-circle-fill text-success me-2"></i>Contentieux prud'homal</li>
+                            <li><i class="bi bi-check-circle-fill text-success me-2"></i>Licenciements</li>
+                            <li><i class="bi bi-check-circle-fill text-success me-2"></i>Harcèlement</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <div class="specialization-card fade-in">
+                        <div class="specialization-icon">
+                            <i class="bi bi-globe"></i>
+                        </div>
+                        <h3>Droit International</h3>
+                        <p>Contrats internationaux, arbitrage commercial, conflits de juridictions et droit européen.</p>
+                        <ul class="list-unstyled text-start mt-3">
+                            <li><i class="bi bi-check-circle-fill text-success me-2"></i>Arbitrage international</li>
+                            <li><i class="bi bi-check-circle-fill text-success me-2"></i>Contrats internationaux</li>
+                            <li><i class="bi bi-check-circle-fill text-success me-2"></i>Droit européen</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About -->
+    <section id="about" class="about">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-5">
+                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&h=600&fit=crop&crop=face" alt="Maître Mike Gabriel" class="profile-image fade-in">
+                </div>
+                <div class="col-lg-7">
+                    <div class="about-content fade-in">
+                        <h2 class="font-display h1 mb-4">À Propos de Maître Mike Gabriel</h2>
+                        <p class="lead">Diplômé de l'Université Paris II Panthéon-Assas, Maître Mike Gabriel exerce le droit depuis plus de 15 ans avec passion et engagement.</p>
+                        
+                        <div class="row mt-4">
+                            <div class="col-md-6">
+                                <h5><i class="bi bi-mortarboard-fill text-warning me-2"></i>Formation</h5>
+                                <ul class="list-unstyled">
+                                    <li>• Master 2 Droit des Affaires - Paris II</li>
+                                    <li>• CAPA - École de Formation du Barreau</li>
+                                    <li>• Formation continue CNFPA</li>
+                                </ul>
+                            </div>
+                            <div class="col-md-6">
+                                <h5><i class="bi bi-award-fill text-warning me-2"></i>Distinctions</h5>
+                                <ul class="list-unstyled">
+                                    <li>• Avocat d'honneur du Barreau de Paris</li>
+                                    <li>• Prix de l'excellence juridique 2023</li>
+                                    <li>• Médiateur agréé CMAP</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <p class="mt-4">Mon approche se base sur l'écoute, la disponibilité et l'excellence juridique. Chaque dossier est unique et mérite une attention particulière pour trouver la meilleure solution adaptée à votre situation.</p>
+                        
+                        <div class="d-flex gap-3 mt-4">
+                            <a href="#contact" class="btn btn-primary-custom">
+                                <i class="bi bi-calendar-check me-2"></i>
+                                Prendre RDV
+                            </a>
+                            <a href="tel:+33123456789" class="btn btn-outline-primary">
+                                <i class="bi bi-telephone me-2"></i>
+                                01 23 45 67 89
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="testimonials">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 mx-auto text-center mb-5">
+                    <h2 class="font-display h1 fade-in">Témoignages Clients</h2>
+                    <p class="lead fade-in">La satisfaction de mes clients est ma priorité</p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="testimonial-card fade-in">
+                        <div class="testimonial-text">
+                            "Maître Gabriel m'a accompagné avec professionnalisme lors de ma création d'entreprise. Son expertise et sa disponibilité ont été déterminantes pour le succès de mon projet."
+                        </div>
+                        <div class="testimonial-author">
+                            - Marie Dubois, CEO TechStart
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="testimonial-card fade-in">
+                        <div class="testimonial-text">
+                            "Un avocat à l'écoute et très compétent. Il a su défendre mes intérêts avec brio lors de ma procédure de divorce. Je le recommande vivement."
+                        </div>
+                        <div class="testimonial-author">
+                            - Pierre Martin, Entrepreneur
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="testimonial-card fade-in">
+                        <div class="testimonial-text">
+                            "Excellence juridique et approche humaine. Maître Gabriel a résolu mon contentieux commercial de manière efficace et dans les délais."
+                        </div>
+                        <div class="testimonial-author">
+                            - Sophie Leroux, Directrice
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact -->
+    <section id="contact" class="contact">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 mx-auto text-center mb-5">
+                    <h2 class="font-display h1 fade-in">Me Contacter</h2>
+                    <p class="lead fade-in">Prenez rendez-vous pour une consultation personnalisée</p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-8 mx-auto">
+                    <div class="contact-form fade-in">
+                        <form id="contactForm" action="/submit-contact" method="POST">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="firstName" class="form-label">Prénom *</label>
+                                        <input type="text" class="form-control" id="firstName" name="firstName" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="lastName" class="form-label">Nom *</label>
+                                        <input type="text" class="form-control" id="lastName" name="lastName" required>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="email" class="form-label">Email *</label>
+                                        <input type="email" class="form-control" id="email" name="email" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="phone" class="form-label">Téléphone</label>
+                                        <input type="tel" class="form-control" id="phone" name="phone">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="legalArea" class="form-label">Domaine juridique *</label>
+                                        <select class="form-control" id="legalArea" name="legalArea" required>
+                                            <option value="">Choisir un domaine</option>
+                                            <option value="business">Droit des Affaires</option>
+                                            <option value="criminal">Droit Pénal</option>
+                                            <option value="family">Droit de la Famille</option>
+                                            <option value="real-estate">Droit Immobilier</option>
+                                            <option value="labor">Droit du Travail</option>
+                                            <option value="international">Droit International</option>
+                                            <option value="other">Autre</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="urgency" class="form-label">Urgence</label>
+                                        <select class="form-control" id="urgency" name="urgency">
+                                            <option value="low">Non urgent</option>
+                                            <option value="medium">Urgent</option>
+                                            <option value="high">Très urgent</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="company" class="form-label">Société (optionnel)</label>
+                                <input type="text" class="form-control" id="company" name="company">
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="subject" class="form-label">Objet de votre demande *</label>
+                                <input type="text" class="form-control" id="subject" name="subject" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="message" class="form-label">Message détaillé *</label>
+                                <textarea class="form-control" id="message" name="message" rows="6" required 
+                                    placeholder="Décrivez votre situation juridique en détail. Plus vous donnerez d'informations, mieux je pourrai vous conseiller."></textarea>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="budget" class="form-label">Budget estimé</label>
+                                <select class="form-control" id="budget" name="budget">
+                                    <option value="">Non spécifié</option>
+                                    <option value="1000">Moins de 1 000€</option>
+                                    <option value="5000">1 000€ - 5 000€</option>
+                                    <option value="10000">5 000€ - 10 000€</option>
+                                    <option value="20000">10 000€ - 20 000€</option>
+                                    <option value="20000+">Plus de 20 000€</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="preferredContact" class="form-label">Mode de contact préféré</label>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="preferredContact" id="contactEmail" value="email" checked>
+                                            <label class="form-check-label" for="contactEmail">Email</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="preferredContact" id="contactPhone" value="phone">
+                                            <label class="form-check-label" for="contactPhone">Téléphone</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="preferredContact" id="contactMeeting" value="meeting">
+                                            <label class="form-check-label" for="contactMeeting">Rendez-vous</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mb-4">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="consent" name="consent" required>
+                                    <label class="form-check-label" for="consent">
+                                        J'accepte que mes données personnelles soient utilisées pour me recontacter dans le cadre de ma demande juridique. *
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="text-center">
+                                <button type="submit" class="btn btn-primary-custom btn-lg">
+                                    <i class="bi bi-send me-2"></i>
+                                    Envoyer ma demande
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contact Info -->
+            <div class="row mt-5">
+                <div class="col-lg-4">
+                    <div class="text-center fade-in">
+                        <div class="specialization-icon mx-auto mb-3">
+                            <i class="bi bi-geo-alt"></i>
+                        </div>
+                        <h5>Cabinet</h5>
+                        <p>15 Avenue des Champs-Élysées<br>75008 Paris</p>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="text-center fade-in">
+                        <div class="specialization-icon mx-auto mb-3">
+                            <i class="bi bi-telephone"></i>
+                        </div>
+                        <h5>Téléphone</h5>
+                        <p>01 23 45 67 89<br>Urgence: 06 12 34 56 78</p>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="text-center fade-in">
+                        <div class="specialization-icon mx-auto mb-3">
+                            <i class="bi bi-envelope"></i>
+                        </div>
+                        <h5>Email</h5>
+                        <p>contact@mikegabriel-avocat.fr<br>urgent@mikegabriel-avocat.fr</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4">
+                    <h5>Cabinet Mike Gabriel</h5>
+                    <p>Votre avocat de confiance à Paris, spécialisé dans le droit des affaires, pénal et de la famille.</p>
+                    <div class="social-links">
+                        <a href="#" class="me-3"><i class="bi bi-linkedin"></i></a>
+                        <a href="#" class="me-3"><i class="bi bi-youtube"></i></a>
+                        <a href="#"><i class="bi bi-envelope"></i></a>
+                    </div>
+                </div>
+                <div class="col-lg-2">
+                    <h5>Navigation</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#home">Accueil</a></li>
+                        <li><a href="#specializations">Services</a></li>
+                        <li><a href="#about">À Propos</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3">
+                    <h5>Spécialisations</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#">Droit des Affaires</a></li>
+                        <li><a href="#">Droit Pénal</a></li>
+                        <li><a href="#">Droit de la Famille</a></li>
+                        <li><a href="#">Droit Immobilier</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3">
+                    <h5>Informations</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#">Mentions légales</a></li>
+                        <li><a href="#">Politique de confidentialité</a></li>
+                        <li><a href="#">Honoraires</a></li>
+                        <li><a href="#">Plan d'accès</a></li>
+                    </ul>
+                </div>
+            </div>
+            <hr class="my-4">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <p class="mb-0">&copy; 2025 Cabinet Mike Gabriel. Tous droits réservés.</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <p class="mb-0">Avocat inscrit au Barreau de Paris | RPVA: 75001</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Legal Badge -->
+    <div class="legal-badge" title="Consultation gratuite">
+        <i class="bi bi-scales"></i>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

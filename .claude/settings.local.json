@@ -43,7 +43,9 @@
       "Bash(ss:*)",
       "Bash(kill:*)",
       "Bash(/host/usr/bin/docker-compose ps)",
-      "Bash(git init:*)"
+      "Bash(git init:*)",
+      "Bash(/opt/app/cleanup-repo.sh:*)",
+      "Bash(git add:*)"
     ],
     "deny": []
   }
